@@ -21,6 +21,7 @@
 ## 解法
 1.  暴力法  
 递归生成字符串，然后判断加入结果List。
+  
 ```Java
 class Solution {
     public List<String> generateParenthesis(int n) {
@@ -60,8 +61,10 @@ class Solution {
     }
 }
 ```
+
 2. 回溯法  
-只在序列仍有效时添加括号
+只在序列仍有效时添加括号  
+
 ```Java
 class Solution {
     public List<String> generateParenthesis(int n) {

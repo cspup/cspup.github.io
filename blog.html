@@ -38,7 +38,7 @@
         .then(function (response) {
             console.log(response);
             content = response.data;
-            document.getElementById("blog-view").innerHTML = marked(content);
+            document.getElementById("blog-view").innerHTML = marked.parse(content);
         })
     };
 
