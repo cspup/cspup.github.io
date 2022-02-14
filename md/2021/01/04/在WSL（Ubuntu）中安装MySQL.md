@@ -8,7 +8,7 @@
 打开这个文件 `sudo cat /etc/mysql/debian.cnf`
 
 <div align=center>
-<img src="./image.png">
+<img src="image.png">
 </div>
 使用里面的user和password登录
 
@@ -30,7 +30,7 @@
 
 `mysql -u root -p`
 <div align=center>
-<img src="./image-1.png">
+<img src="image-1.png">
 </div>
 
 安装完成。
@@ -42,7 +42,7 @@
 `sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf`
 
 <div align=center>
-<img src="./image-2.png">
+<img src="image-2.png">
 </div>
 
 重新启动MySQL服务

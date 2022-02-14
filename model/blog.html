@@ -9,22 +9,23 @@
 </head>
 <script src="/js/marked.min.js"></script>
 <script src="/js/axios.min.js"></script>
-<link rel="stylesheet" href="/css/github-markdown.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="/css/github-markdown.css" />
 <style>
     .markdown-body {
-		box-sizing: border-box;
-		min-width: 200px;
-		max-width: 980px;
-		margin: 0 auto;
-		padding: 45px;
-	}
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
 
-	@media (max-width: 767px) {
-		.markdown-body {
-			padding: 15px;
-		}
-	}
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
 </style>
+
 <body>
     <div id="blog-view" class="markdown-body">
 
@@ -35,16 +36,15 @@
         var filename = getQueryVariable("path");
         var content;
         axios.get(filename,)
-        .then(function (response) {
-            console.log(response);
-            content = response.data;
-            document.getElementById("blog-view").innerHTML = marked.parse(content);
-        })
+            .then(function (response) {
+                content = response.data;
+                document.getElementById("blog-view").innerHTML = marked.parse(content);
+                replaceImgSrc();
+            })
     };
 
     function renderMarkDown() {
         var filename = getQueryVariable("path");
-        console.log(decodeURI(filename));
         var markdown;
         var url = "http://127.0.0.1:8080/api/index/getMarkdown";
         axios.get(url, {
@@ -53,7 +53,6 @@
             }
         })
             .then(function (response) {
-                console.log(response);
                 content = response.data;
                 document.getElementById("blog-view").innerHTML = marked(content);
             })
@@ -74,6 +73,25 @@
         }
         return (false);
     }
+
+    // 替换图片地址
+    function replaceImgSrc() {
+        var mdPath = getQueryVariable("path");
+        var filePath = mdPath.substring(0, mdPath.lastIndexOf("/"));
+
+        var blog_view = document.getElementById("blog-view");
+
+        let imgs = blog_view.getElementsByTagName("img");
+        Array.prototype.forEach.call(imgs, function (item, index) {
+            var src = item.getAttribute('src');
+            // 只转换本地图片，外部引用的不转换
+            if (src.indexOf("http") == -1) {
+                item.src = filePath + "/" + item.getAttribute('src');
+            }
+
+        });
+    }
+
 </script>
 
 </html>
