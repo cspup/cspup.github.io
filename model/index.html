@@ -7,13 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>首页</title>
 </head>
+<style>
+    body {
+        height: 100%;
+    }
+
+    #main-view {
+        height: 100%;
+        width: 80%;
+        border: 1px solid black;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #blog-list li {
+        padding: 5px;
+    }
+</style>
 <script src="/js/axios.min.js"></script>
 
 <body>
-    <div>
-        <ul id="blog-list">
-            {{blog-list}}
-        </ul>
+    <div id="main-view">
+        <div>
+            <ul id="blog-list">
+                {{blog-list}}
+            </ul>
+        </div>
     </div>
 </body>
 <script>

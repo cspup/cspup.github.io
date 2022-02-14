@@ -7,12 +7,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>首页</title>
 </head>
+<style>
+    body {
+        height: 100%;
+    }
+
+    #main-view {
+        height: 100%;
+        width: 80%;
+        border: 1px solid black;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #blog-list li {
+        padding: 5px;
+    }
+</style>
 <script src="/js/axios.min.js"></script>
 
 <body>
-    <div>
-        <ul id="blog-list">
-            <li><a href="./blog.html?path=/md/2022/01/07/leetcode--22. 括号生成.md">leetcode--22. 括号生成--2022-02-14</a></li>
+    <div id="main-view">
+        <div>
+            <ul id="blog-list">
+                <li><a href="./blog.html?path=/md/2022/01/07/leetcode--22. 括号生成.md">leetcode--22. 括号生成--2022-02-14</a></li>
 <li><a href="./blog.html?path=/md/2022/01/06/测试.md">测试--2021-12-26</a></li>
 <li><a href="./blog.html?path=/md/2021/01/04/在WSL（Ubuntu）中安装MySQL.md">在WSL（Ubuntu）中安装MySQL--2022-02-14</a></li>
 <li><a href="./blog.html?path=/md/2020/07/26/Oracle–根据字段名查询字段所在表和字段属性.md">Oracle–根据字段名查询字段所在表和字段属性--2022-02-14</a></li>
@@ -27,7 +45,8 @@
 <li><a href="./blog.html?path=/md/2019/05/26/Java 通过Properties配置文件配置程序.md">Java 通过Properties配置文件配置程序--2022-02-14</a></li>
 <li><a href="./blog.html?path=/md/2019/05/19/为什么JavaWeb项目要分层？.md">为什么JavaWeb项目要分层？--2022-02-14</a></li>
 
-        </ul>
+            </ul>
+        </div>
     </div>
 </body>
 <script>
