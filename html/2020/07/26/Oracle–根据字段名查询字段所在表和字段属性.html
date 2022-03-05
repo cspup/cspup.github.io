@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>blog</title>
+</head>
+<link href="/css/github-markdown.css" rel="stylesheet"/>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<body>
+<div class="markdown-body" id="blog-view">
+    <h1>Oracle–根据字段名查询字段所在表和字段属性</h1>
+<pre><code class="language-SQL">--根据字段名查找对应的表和注释
+select concat(concat(a.owner, '.'), a.table_name) 表名,
+       a.column_name 字段名,
+       a.data_type 字段类型,
+       a.data_length 字段长度,
+       b.comments 字段描述
+  from dba_tab_columns a, dba_col_comments b
+ where a.OWNER = b.owner
+   and a.TABLE_NAME = b.table_name
+   and a.COLUMN_NAME = b.column_name
+   and b.column_name like upper('字段名');
+</code></pre>
+
+</div>
+</body>
+<script>
+</script>
+
+</html>

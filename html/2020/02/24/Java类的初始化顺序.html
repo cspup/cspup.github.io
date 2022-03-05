@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>blog</title>
+</head>
+<link href="/css/github-markdown.css" rel="stylesheet"/>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<body>
+<div class="markdown-body" id="blog-view">
+    <h1>Java类的初始化顺序</h1>
+<p>笔试经常遇到的题，总是做错，总结一下吧。</p>
+<p>初始化顺序：1.父类的静态代码（方法/变量）=》2.子类的静态代码（方法/变量）=》3.父类的初始化代码块=》4.父类的构造器=》5.子类的初始化代码块=》6.子类的构造器</p>
+<p>示例代码：</p>
+<pre><code class="language-Java">class A{
+    public A() {
+        System.out.println(&quot;4：A的构造方法&quot;);
+    }
+    { System.out.println(&quot;3：A的初始化代码，创建类的时候就执行&quot;); }
+    static { System.out.println(&quot;1：A的静态代码块，加载类的时候就执行&quot;); }
+}
+
+public class B extends A {
+    public B(){
+        System.out.println(&quot;6：B的构造方法&quot;);
+    }
+    {System.out.println(&quot;5：B的初始化代码&quot;);}
+    static {System.out.println(&quot;2：B的静态代码块&quot;);}
+    public static void main(String[] args) {
+        new B();
+    }
+}
+</code></pre>
+<p>运行结果：<br />
+1：A的静态代码块，加载类的时候就执行<br />
+2：B的静态代码块<br />
+3：A的初始化代码，创建类的时候就执行<br />
+4：A的构造方法<br />
+5：B的初始化代码<br />
+6：B的构造方法</p>
+
+</div>
+</body>
+<script>
+</script>
+
+</html>

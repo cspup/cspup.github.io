@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>blog</title>
+</head>
+<link href="/css/github-markdown.css" rel="stylesheet"/>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<body>
+<div class="markdown-body" id="blog-view">
+    <h1>el-image点击图片后页面不能滚动</h1>
+<p>原因：el-image源码有一个函数向body添加了overflow:hidden</p>
+<p>暂时的解决方法：为body添加overflow:auto!important</p>
+<p>element的github上发现了针对这个问题的issue，在其中一个找到了暂时的解决方案： https://github.com/ElemeFE/element/issues/18490</p>
+
+</div>
+</body>
+<script>
+</script>
+
+</html>

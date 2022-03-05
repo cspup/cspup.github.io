@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>blog</title>
+</head>
+<link href="/css/github-markdown.css" rel="stylesheet"/>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<body>
+<div class="markdown-body" id="blog-view">
+    <h1>Java 通过Properties配置文件配置程序</h1>
+<p>我们有时会希望让配置灵活变动，最好不通过修改代码中的变量实现，这时配置文件就起到了作用。</p>
+<p>Java给我们提供了一个类：java.util.Properties;这样在java中使用Properties配置文件就变得简单多了。</p>
+<p>Properties类继承自Hashtable类并实现了Map接口，使用键值对的形式来保存属性，是它的键和值都是字符串类型。</p>
+<ol>
+<li>load()方法 从文件输入流中加载属性列表</li>
+</ol>
+<pre><code class="language-Java">Properties properties=new Properties(); 
+InputStream in = getClass().getClassLoader().getResource(&quot;config.properties&quot;).openStream();//打开配置文件
+properties.load(in);
+path = (String) properties.get(&quot;path&quot;);//从配置文件中获取path属性
+</code></pre>
+<ol start="2">
+<li>store() 方法，配置属性写到文件中</li>
+</ol>
+<pre><code class="language-Java">  FileOutputStream out = new FileOutputStream(file, &quot;config.properties&quot;);
+pro.store(out, &quot;Comment&quot;);
+</code></pre>
+<ol start="3">
+<li>getProperty ( String key)<br />
+通过参数 key ，得到 key 所对应的 属性。</li>
+<li>setProperty ( String key, String value)<br />
+设置key对应的属性</li>
+<li>clear()<br />
+清除装载的属性。</li>
+</ol>
+
+</div>
+</body>
+<script>
+</script>
+
+</html>

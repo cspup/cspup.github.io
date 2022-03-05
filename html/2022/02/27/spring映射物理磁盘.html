@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>blog</title>
+</head>
+<link href="/css/github-markdown.css" rel="stylesheet"/>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<body>
+<div class="markdown-body" id="blog-view">
+    <h1>spring映射物理磁盘目录</h1>
+<p>实现WebMvcConfigurer接口的addResourceHandlers方法即可</p>
+<pre><code class="language-Java">@Configuration
+public class FilePathConfig implements WebMvcConfigurer {
+    @Value(&quot;${basePath}&quot;)
+    private String filePath;
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(&quot;/img/**&quot;).addResourceLocations(&quot;file:&quot;+filePath);
+    }
+}
+</code></pre>
+
+</div>
+</body>
+<script>
+</script>
+
+</html>

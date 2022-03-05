@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>blog</title>
+</head>
+<link href="/css/github-markdown.css" rel="stylesheet"/>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<body>
+<div class="markdown-body" id="blog-view">
+    <h1>Maven创建多模块项目</h1>
+<p>首先创建一个只有pom.xml的父项目。</p>
+<div align=center>
+<img src="./image-1.png">
+</div>
+<p>创建完是这样的</p>
+<div align=center>
+<img src="./image-2.png">
+</div>
+然后在这个project中添加module  
+<div align=center>
+<img src="./image-4.png">
+</div>
+创建完的目录结构
+<div align=center>
+<img src="./image-5.png">
+</div>
+接下来配置pom文件。首先配置父级项目的pom.xml。下面是一个已经配置好的pom.xml    
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+&lt;!--        　　　　　　项目的包名--&gt;
+    &lt;groupId&gt;com.yemu.mall&lt;/groupId&gt;
+    &lt;artifactId&gt;mall&lt;/artifactId&gt;
+&lt;!--        　　　　　　项目版本--&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+&lt;!--        　　打包方式，这里选择了pom，因为父级项目没有代码--&gt;
+    &lt;packaging&gt;pom&lt;/packaging&gt;
+&lt;!--        　　　　　　项目描述--&gt;
+    &lt;name&gt;mall&lt;/name&gt;
+    &lt;description&gt;a mall&lt;/description&gt;
+&lt;!--        　设置包含的模块--&gt;
+    &lt;modules&gt;
+        &lt;module&gt;mall-portal&lt;/module&gt;
+        &lt;module&gt;mall-common&lt;/module&gt;
+    &lt;/modules&gt;
+&lt;!--        　　　　　　父级依赖--&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;2.2.5.RELEASE&lt;/version&gt;
+        &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+    &lt;/parent&gt;
+&lt;!--        　　　　　　一些项目属性配置--&gt;
+    &lt;properties&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+        &lt;!--        　　　　　　//设置项目编码--&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+        &lt;maven.compiler.encoding&gt;UTF-8&lt;/maven.compiler.encoding&gt;
+&lt;!--        子模块的版本号配置--&gt;
+        &lt;mall-common.version&gt;1.0-SNAPSHOT&lt;/mall-common.version&gt;
+        &lt;mall-portal.version&gt;1.0-SNAPSHOT&lt;/mall-portal.version&gt;
+    &lt;/properties&gt;
+
+&lt;!--    基础依赖 当子模块使用下面的依赖时不需再配置--&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--        MySQL驱动    --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+&lt;!--依赖管理 子模块使用时还需要单独引入，但是不需要再写版本号了--&gt;
+    &lt;dependencyManagement&gt;
+        &lt;dependencies&gt;
+&lt;!--            通用模块--&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;com.yemu.mall&lt;/groupId&gt;
+                &lt;artifactId&gt;mall-common&lt;/artifactId&gt;
+                &lt;version&gt;${mall-common.version}&lt;/version&gt;
+            &lt;/dependency&gt;
+&lt;!--            前台模块--&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;com.yemu.mall&lt;/groupId&gt;
+                &lt;artifactId&gt;mall-portal&lt;/artifactId&gt;
+                &lt;version&gt;${mall-portal.version}&lt;/version&gt;
+            &lt;/dependency&gt;
+&lt;!--            七牛云SDK--&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;com.qiniu&lt;/groupId&gt;
+                &lt;artifactId&gt;qiniu-java-sdk&lt;/artifactId&gt;
+                &lt;version&gt;[7.2.0, 7.2.99]&lt;/version&gt;
+            &lt;/dependency&gt;
+        &lt;/dependencies&gt;
+    &lt;/dependencyManagement&gt;
+&lt;/project&gt;
+</code></pre>
+<p>接下来配置子模块的pom.xml</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+&lt;!--        　　　模块信息--&gt;
+    &lt;groupId&gt;com.yemu.mall&lt;/groupId&gt;
+    &lt;artifactId&gt;mall-common&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+&lt;!--        　　　　　　打包方式--&gt;
+    &lt;packaging&gt;jar&lt;/packaging&gt;
+
+    &lt;name&gt;mall-common&lt;/name&gt;
+    &lt;description&gt;商城通用组件&lt;/description&gt;
+
+&lt;!--        　　　　　父级依赖，这里配置为父级项目--&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;com.yemu.mall&lt;/groupId&gt;
+        &lt;artifactId&gt;mall&lt;/artifactId&gt;
+        &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;/parent&gt;
+
+ &lt;!--        父级pom中dependencies下已配置的不需要再配置--&gt;
+    &lt;dependencies&gt;
+        &lt;!--        七牛云sdk,因为已在父级pom中配置了版本号，这里不再配置，只引入--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.qiniu&lt;/groupId&gt;
+            &lt;artifactId&gt;qiniu-java-sdk&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+&lt;/project&gt;
+</code></pre>
+<p>如果要引入自己的其他项目，比如一个工具库，则只需要使用mvn install到自己的本地库，然后在需要用到的项目中添加依赖引用即可。下面是一个例子：</p>
+<ol>
+<li>首先使用maven install 到本地仓库中<br />
+maven命令：<code>mvn clean install</code><br />
+可以看到mall-common依赖已安装到本地仓库</li>
+</ol>
+<div align=center>
+<img src="./image-6.png">
+</div>
+2. 项目中引入   
+<p>像引入其他包一样在pom文件中引入即可</p>
+<pre><code class="language-XMl">&lt;dependency&gt;
+    &lt;groupId&gt;com.yemu.mall&lt;/groupId&gt;
+    &lt;artifactId&gt;mall-common&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+</div>
+</body>
+<script>
+</script>
+
+</html>

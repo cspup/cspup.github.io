@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>blog</title>
+</head>
+<link href="/css/github-markdown.css" rel="stylesheet"/>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<body>
+<div class="markdown-body" id="blog-view">
+    <h1>记录一下axios请求和后端对应的处理</h1>
+<ol start="0">
+<li>html中单独引入axios和qs库</li>
+</ol>
+<pre><code class="language-JavaScript">&lt;script src=&quot;https://cdn.bootcdn.net/ajax/libs/axios/0.26.0/axios.min.js&quot;&gt;&lt;/script&gt;  
+&lt;script src=&quot;https://cdn.bootcdn.net/ajax/libs/qs/6.10.3/qs.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;script&gt;
+// cdn方式引用qs库要先实例化一下
+var qs = QS;
+
+&lt;/script&gt;
+</code></pre>
+<ol>
+<li>axios默认发送application/json参数时</li>
+</ol>
+<pre><code class="language-JavaScript">// js
+&lt;script&gt;
+function createNote(content){
+    axios({
+        url: 'http://127.0.0.1:8081/api/createNote2',
+        method: 'post',
+        data: {
+                content: content
+            }
+        }).then(function (response){
+            console.log(response)
+        }).catch(function (error){
+            console.log(error)
+    });
+}
+&lt;script&gt;
+</code></pre>
+<pre><code class="language-Java">//Java
+// 需要用对象接收，或者用Map&lt;String,Object&gt;接收再解析
+@PostMapping(&quot;/createNote2&quot;)
+public void CreateNote(@RequestBody Note note){
+    noteService.createNote(note.getContent());
+
+}
+</code></pre>
+<ol start="2">
+<li>使用qs库处理后发送application/x-www-form-urlencoded格式参数</li>
+</ol>
+<pre><code class="language-Javascript">&lt;script&gt;
+function createNote(content){
+    const qs = Qs;
+        axios({
+            url: 'http://127.0.0.1:8081/api/createNote',
+            method: 'post',
+            data: qs.stringify({content: content})
+        }).then(function (response){
+            console.log(response)
+        }).catch(function (error){
+            console.log(error)
+        })
+}
+&lt;/script&gt;
+</code></pre>
+<pre><code class="language-Java">// 接收application/x-www-form-urlencoded或multipart/form-data格式的参数
+@PostMapping(&quot;/createNote&quot;)
+public void CreateNote(@RequestParam String content){
+    noteService.createNote(content);
+}
+</code></pre>
+
+</div>
+</body>
+<script>
+</script>
+
+</html>
