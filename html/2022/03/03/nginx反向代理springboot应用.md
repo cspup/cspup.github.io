@@ -1,4 +1,4 @@
-# nginx反向代理springboot应用.md
+# nginx反向代理springboot应用
 0. 安装nginx和启动springboot应用  
 1. 配置nginx.conf  
 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>blog</title>
+</head>
+<link href="/css/github-markdown.css" rel="stylesheet"/>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<body>
+<div class="markdown-body" id="blog-view">
+    <h1>maven配置编译时资源目录的输出位置</h1>
+<p>使用maven-resources-plugin插件进行配置，也可以用这个插件将打包后的前端项目输出到Java项目中的文件夹下，然后用tomcat运行前端项目，实现一键启动应用。</p>
+<ol>
+<li>pom.xml中的配置</li>
+</ol>
+<pre><code class="language-xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-resources-plugin&lt;/artifactId&gt;
+    &lt;version&gt;3.2.0&lt;/version&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+        &lt;!-- 任务id --&gt;
+            &lt;id&gt;copy-models&lt;/id&gt;
+            &lt;!-- 任务运行在哪个阶段 --&gt;
+            &lt;phase&gt;process-sources&lt;/phase&gt;
+            &lt;!-- 目标 --&gt;
+                &lt;goals&gt;
+                    &lt;goal&gt;copy-resources&lt;/goal&gt;
+                &lt;/goals&gt;
+                &lt;configuration&gt;
+                &lt;!-- 输出到编译目录下的model文件夹下 --&gt;
+                    &lt;outputDirectory&gt;${project.build.directory}/model&lt;/outputDirectory&gt;
+                    &lt;!-- 包含空文件夹 --&gt;
+                    &lt;includeEmptyDirs&gt;true&lt;/includeEmptyDirs&gt;                        &lt;resources&gt;
+                        &lt;resource&gt;
+                        &lt;!-- 资源目录 --&gt;
+                            &lt;directory&gt;src/main/model&lt;/directory&gt;
+                            &lt;includes&gt;
+                            &lt;!-- 包含所有文件 --&gt;
+                                &lt;include&gt;**/*&lt;/include&gt;
+                           &lt;/includes&gt;
+                        &lt;/resource&gt;
+                    &lt;/resources&gt;
+                &lt;/configuration&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+<ol start="2">
+<li>项目目录</li>
+</ol>
+<div align=center>
+<img src="项目结构.png">
+</div>
+<ol start="3">
+<li>maven编译出的目录</li>
+</ol>
+<div align=center>
+<img src="maven编译出的目录.png">
+</div>
+
+</div>
+</body>
+<script>
+</script>
+
+</html>

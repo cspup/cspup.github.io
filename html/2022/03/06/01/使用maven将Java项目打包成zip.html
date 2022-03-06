@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>blog</title>
+</head>
+<link href="/css/github-markdown.css" rel="stylesheet"/>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<body>
+<div class="markdown-body" id="blog-view">
+    <h1>使用maven将Java项目打包成zip</h1>
+<p>使用maven-assembly-plugin插件，可以灵活配置打包的文件。</p>
+<ol>
+<li>pomx.xml中的插件配置</li>
+</ol>
+<pre><code class="language-xml"> &lt;plugin&gt;
+    &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
+    &lt;version&gt;3.3.0&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;descriptors&gt;
+        &lt;!-- 配置文件地址 --&gt;
+            &lt;descriptor&gt;src/main/resources/assembly.xml&lt;/descriptor&gt;
+        &lt;/descriptors&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+        &lt;!-- 任务id --&gt;
+            &lt;id&gt;assembly&lt;/id&gt;
+            &lt;!-- 在maven生命周期的哪个阶段 --&gt;
+                &lt;phase&gt;package&lt;/phase&gt;
+                    &lt;goals&gt;
+                    &lt;!-- 目标 --&gt;
+                        &lt;goal&gt;single&lt;/goal&gt;
+                    &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+<ol start="2">
+<li>assembly.xml maven-assembly-plugin的配置文件</li>
+</ol>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;assembly&gt;
+    &lt;id&gt;${version}&lt;/id&gt;
+    &lt;formats&gt;
+&lt;!--        打包格式--&gt;
+        &lt;format&gt;zip&lt;/format&gt;
+    &lt;/formats&gt;
+    &lt;dependencySets&gt;
+        &lt;dependencySet&gt;
+            &lt;useProjectArtifact&gt;true&lt;/useProjectArtifact&gt;
+&lt;!--            依赖打包到lib目录下，需使用maven-jar-plugin插件配置&lt;classpathPrefix&gt;lib/&lt;/classpathPrefix&gt;--&gt;
+            &lt;outputDirectory&gt;lib&lt;/outputDirectory&gt;
+        &lt;/dependencySet&gt;
+    &lt;/dependencySets&gt;
+
+    &lt;!-- 文件设置，你想把哪些文件包含进去，或者把某些文件排除掉，都是在这里配置--&gt;
+    &lt;fileSets&gt;
+        &lt;!-- 把项目自己编译出来的可执行jar，打包进zip文件的根目录 --&gt;
+        &lt;fileSet&gt;
+            &lt;directory&gt;${project.build.directory}&lt;/directory&gt;
+            &lt;outputDirectory&gt;/&lt;/outputDirectory&gt;
+            &lt;includes&gt;
+                &lt;include&gt;*.jar&lt;/include&gt;
+            &lt;/includes&gt;
+        &lt;/fileSet&gt;
+
+&lt;!-- model文件输出到/model下 --&gt;
+        &lt;fileSet&gt;
+            &lt;directory&gt;${project.model.directory}&lt;/directory&gt;
+            &lt;outputDirectory&gt;model&lt;/outputDirectory&gt;
+        &lt;/fileSet&gt;
+
+&lt;!-- 配置文件输出到根目录 --&gt;
+        &lt;fileSet&gt;
+            &lt;directory&gt;${project.resources.directory}&lt;/directory&gt;
+            &lt;outputDirectory&gt;/&lt;/outputDirectory&gt;
+            &lt;includes&gt;
+                &lt;include&gt;config.properties&lt;/include&gt;
+            &lt;/includes&gt;
+
+        &lt;/fileSet&gt;
+        
+&lt;!-- 脚本文件 --&gt;
+        &lt;fileSet&gt;
+            &lt;directory&gt;${project.script.directory}&lt;/directory&gt;
+            &lt;outputDirectory&gt;/&lt;/outputDirectory&gt;
+            &lt;includes&gt;
+                &lt;include&gt;*&lt;/include&gt;
+            &lt;/includes&gt;
+        &lt;/fileSet&gt;
+
+    &lt;/fileSets&gt;
+&lt;/assembly&gt;
+</code></pre>
+<ol start="3">
+<li>项目目录</li>
+</ol>
+<div align=center>
+<img src="项目结构.png">
+</div>
+<ol start="4">
+<li>打包出的目录</li>
+</ol>
+<div align=center>
+<img src="输出目录.png">
+</div>
+
+</div>
+</body>
+<script>
+</script>
+
+</html>
