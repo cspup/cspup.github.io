@@ -26,7 +26,7 @@
 
 <body>
 <div class="markdown-body" id="blog-view">
-    <h1>为什么JavaWeb项目要分层？</h1>
+    <h1 id="为什么javaweb项目要分层">为什么JavaWeb项目要分层？</h1>
 <p>在Javaweb中项目一般都分成action，service，dao，model层，一个功能要通过请求action，然后调用service，service调用dao层操作model层来实现。但是直接在action调用dao层，或者更极端一点，用jsp调用dao层也是可以实现功能的。</p>
 <p>个人理解：项目分层提高了项目的可维护性和扩展性，简单来说就是需要新功能时不需要修改过多代码，项目出问题时可以快速定位出问题的位置，比如跳转出问题，就可以去控制层看代码。再一个就是解耦，适合大项目多人开发的情况。</p>
 <p>在百度知道看到一篇不错的回答，简略叙述了web项目的发展过程，解释了web的mvc分层和Java代码分层和项目架构的发展过程，有很大的启发作用。记录一下，原文地址：https://zhidao.baidu.com/question/2206388866156884028.</p>
