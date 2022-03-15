@@ -12,6 +12,7 @@
 - [剑指 Offer 30. 包含min函数的栈](#剑指-offer-30-包含min函数的栈)
 - [剑指 Offer 24. 反转链表](#剑指-offer-24-反转链表)
 - [剑指 Offer 35. 复杂链表的复制](#剑指-offer-35-复杂链表的复制)
+- [剑指 Offer 58 - II. 左旋转字符串](#剑指-offer-58---ii-左旋转字符串)
 
 ## 剑指 Offer 03. 数组中重复的数字
 
@@ -985,4 +986,60 @@ class Solution {
     }
 }
 ```
+
+## 剑指 Offer 58 - II. 左旋转字符串
+字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
+
+ 
+
+示例 1：
+
+输入: s = "abcdefg", k = 2
+输出: "cdefgab"
+示例 2：
+
+输入: s = "lrloseumgh", k = 6
+输出: "umghlrlose"
+ 
+
+限制：
+
+1 <= k < s.length <= 10000
+
+链接：https://leetcode-cn.com/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/
+
+解法一：直接使用subString
+
+```Java
+class Solution {
+    public String reverseLeftWords(String s, int n) {
+        return s.substring(n, s.length()) + s.substring(0, n);
+    }
+}
+```
+
+解法二：用StringBuilder
+
+```Java
+class Solution {
+    public String reverseLeftWords(String s, int n) {
+        StringBuilder sb1 = new StringBuilder();
+        StringBuilder sb2 = new StringBuilder();
+
+        for (int i=0;i<s.length();i++){
+            if (i<n){
+                sb2.append(s.charAt(i));
+            }else{
+                sb1.append(s.charAt(i));
+            }
+        }
+        sb1.append(sb2.toString());
+
+        return sb1.toString();
+
+    }
+}
+
+```
+
 
