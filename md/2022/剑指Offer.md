@@ -15,6 +15,7 @@
 - [剑指 Offer 58 - II. 左旋转字符串](#剑指-offer-58---ii-左旋转字符串)
 - [剑指 Offer 53 - I. 在排序数组中查找数字 I](#剑指-offer-53---i-在排序数组中查找数字-i)
 - [剑指 Offer 53 - II. 0～n-1中缺失的数字](#剑指-offer-53---ii-0n-1中缺失的数字)
+- [面试题50. 第一个只出现一次的字符](#面试题50-第一个只出现一次的字符)
 
 ## 剑指 Offer 03. 数组中重复的数字
 
@@ -1147,3 +1148,45 @@ class Solution {
 }
 ```
 
+## 面试题50. 第一个只出现一次的字符
+在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
+
+示例 1:
+
+输入：s = "abaccdeff"
+输出：'b'
+示例 2:
+
+输入：s = "" 
+输出：' '
+ 
+
+限制：
+
+0 <= s 的长度 <= 50000
+
+链接：https://leetcode-cn.com/problems/di-yi-ge-zhi-chu-xian-yi-ci-de-zi-fu-lcof/
+
+解法一：使用哈希表
+
+```Java
+class Solution {
+    public char firstUniqChar(String s) {
+        HashMap<Character,Integer> map = new HashMap<>();
+
+        for (char ch:s.toCharArray()){
+            if (map.containsKey(ch)){
+                map.put(ch,map.get(ch)+1);
+            }else {
+                map.put(ch,1);
+            }
+        }
+        for (char ch:s.toCharArray()){
+            if (map.get(ch)==1){
+                return ch;
+            }
+        }
+        return ' ';
+    }
+}
+```
