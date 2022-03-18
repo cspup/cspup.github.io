@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>blog</title>
+</head>
+<link href="/css/github-markdown.css" rel="stylesheet"/>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<body>
+<div class="markdown-body" id="blog-view">
+    <h1 id="异常处理">异常处理</h1>
+<h2 id="起因">起因</h2>
+<ol start="0">
+<li>异常没有在控制台输出信息。</li>
+<li>发现在过滤器中有一个catch块将Exception捕捉却没处理，导致后面都没有再处理这个异常了，也就没在控制台输出。<br />
+原代码：</li>
+</ol>
+<pre><code class="language-Java">        } catch (Exception e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            ResponseUtil.out(response, R.error(e.getMessage()));
+        }
+</code></pre>
+<h2 id="处理方式">处理方式</h2>
+<p>不应捕捉不处理的异常。</p>
+
+</div>
+</body>
+<script>
+</script>
+
+</html>

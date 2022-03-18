@@ -13,6 +13,9 @@
 - [剑指 Offer 24. 反转链表](#剑指-offer-24-反转链表)
 - [剑指 Offer 35. 复杂链表的复制](#剑指-offer-35-复杂链表的复制)
 - [剑指 Offer 58 - II. 左旋转字符串](#剑指-offer-58---ii-左旋转字符串)
+- [剑指 Offer 53 - I. 在排序数组中查找数字 I](#剑指-offer-53---i-在排序数组中查找数字-i)
+- [剑指 Offer 53 - II. 0～n-1中缺失的数字](#剑指-offer-53---ii-0n-1中缺失的数字)
+- [面试题50. 第一个只出现一次的字符](#面试题50-第一个只出现一次的字符)
 
 ## 剑指 Offer 03. 数组中重复的数字
 
@@ -1042,4 +1045,148 @@ class Solution {
 
 ```
 
+## 剑指 Offer 53 - I. 在排序数组中查找数字 I
+统计一个数字在排序数组中出现的次数。
 
+ 
+
+示例 1:
+
+输入: nums = [5,7,7,8,8,10], target = 8
+输出: 2
+示例 2:
+
+输入: nums = [5,7,7,8,8,10], target = 6
+输出: 0
+ 
+
+提示：
+
+0 <= nums.length <= 105
+-109 <= nums[i] <= 109
+nums 是一个非递减数组
+-109 <= target <= 109
+
+链接：https://leetcode-cn.com/problems/zai-pai-xu-shu-zu-zhong-cha-zhao-shu-zi-lcof/
+
+解法一：二分查找
+
+从左右两边进行两次查找，找到左边第一个匹配的和右边第一个匹配的，相减就得结果。
+
+```Java
+
+class Solution {
+    public int search(int[] nums, int target) {
+        
+        int left = binarySearch(nums,target,true);
+        int right =  binarySearch(nums,target,false)-1;
+        if (left<=right&&right<nums.length&&nums[left]==target&&nums[right]==target){
+            return right-left+1;
+        }
+        return 0;
+    }
+
+    public int binarySearch(int[] nums,int target,boolean left){
+        int low = 0;
+        int high = nums.length-1;
+        int res = nums.length;
+
+        while(low<=high){
+            int mid = low + (high-low)/2;
+            if (nums[mid]>target||(left&&nums[mid]>=target)){
+                high = mid-1;
+                res = mid;
+            }else{
+                low = mid+1;
+            }
+        }
+        return res;
+    }
+}
+```
+
+
+## 剑指 Offer 53 - II. 0～n-1中缺失的数字
+一个长度为n-1的递增排序数组中的所有数字都是唯一的，并且每个数字都在范围0～n-1之内。在范围0～n-1内的n个数字中有且只有一个数字不在该数组中，请找出这个数字。
+
+ 
+
+示例 1:
+
+输入: [0,1,3]
+输出: 2
+示例 2:
+
+输入: [0,1,2,3,4,5,6,7,9]
+输出: 8
+ 
+
+限制：
+
+1 <= 数组长度 <= 10000
+
+链接：https://leetcode-cn.com/problems/que-shi-de-shu-zi-lcof/
+
+解法一：二分查找
+
+将数组看成左右两块，左侧能和下标对应的，右侧不能对应，找到右侧第一个不能对应下标的就是第一个缺失的数字。
+```Java
+class Solution {
+    public int missingNumber(int[] nums) {
+        int low = 0;
+        int high = nums.length-1;
+        while (low<=high){
+            int mid = low+(high-low)/2;
+            if (nums[mid]==mid){
+                low = mid+1;
+            }else{
+                high = mid-1;
+            }
+        }
+        return low;
+    }
+}
+```
+
+## 面试题50. 第一个只出现一次的字符
+在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
+
+示例 1:
+
+输入：s = "abaccdeff"
+输出：'b'
+示例 2:
+
+输入：s = "" 
+输出：' '
+ 
+
+限制：
+
+0 <= s 的长度 <= 50000
+
+链接：https://leetcode-cn.com/problems/di-yi-ge-zhi-chu-xian-yi-ci-de-zi-fu-lcof/
+
+解法一：使用哈希表
+
+```Java
+class Solution {
+    public char firstUniqChar(String s) {
+        HashMap<Character,Integer> map = new HashMap<>();
+
+        for (char ch:s.toCharArray()){
+            if (map.containsKey(ch)){
+                map.put(ch,map.get(ch)+1);
+            }else {
+                map.put(ch,1);
+            }
+        }
+        for (char ch:s.toCharArray()){
+            if (map.get(ch)==1){
+                return ch;
+            }
+        }
+        return ' ';
+    }
+}
+```
