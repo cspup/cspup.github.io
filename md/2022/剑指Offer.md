@@ -16,6 +16,9 @@
 - [剑指 Offer 53 - I. 在排序数组中查找数字 I](#剑指-offer-53---i-在排序数组中查找数字-i)
 - [剑指 Offer 53 - II. 0～n-1中缺失的数字](#剑指-offer-53---ii-0n-1中缺失的数字)
 - [面试题50. 第一个只出现一次的字符](#面试题50-第一个只出现一次的字符)
+- [面试题32 - I. 从上到下打印二叉树](#面试题32---i-从上到下打印二叉树)
+- [剑指 Offer 32 - II. 从上到下打印二叉树 II](#剑指-offer-32---ii-从上到下打印二叉树-ii)
+- [剑指 Offer 32 - III. 从上到下打印二叉树 III](#剑指-offer-32---iii-从上到下打印二叉树-iii)
 
 ## 剑指 Offer 03. 数组中重复的数字
 
@@ -1190,3 +1193,231 @@ class Solution {
     }
 }
 ```
+
+
+## 面试题32 - I. 从上到下打印二叉树
+从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
+
+ 
+
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回：
+
+[3,9,20,15,7]
+ 
+
+提示：
+
+节点总数 <= 1000
+
+
+链接：https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-lcof/
+
+
+解法一：层序遍历
+
+```Java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int[] levelOrder(TreeNode root) {
+        if (root==null){
+            return new int[0];
+        }
+        List<Integer> list = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()){
+           TreeNode node =  queue.poll();
+           list.add(node.val);
+           if (node.left!=null){
+               queue.offer(node.left);
+           }
+           if (node.right!=null){
+                queue.offer(node.right);
+           }
+        }
+
+        int[] nums = new int[list.size()];
+
+        // nums = list.stream().mapToInt(Integer::valueOf).toArray();
+        for (int i=0;i<list.size();i++>){
+            nums[i] = list.get(i);
+        }
+
+        return nums;
+    }
+}
+```
+
+## 剑指 Offer 32 - II. 从上到下打印二叉树 II
+从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+
+ 
+
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回其层次遍历结果：
+
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+ 
+
+提示：
+
+节点总数 <= 1000
+
+链接：https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-ii-lcof/
+
+解法一：层序遍历，记录每层元素个数  
+
+```Java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+
+        List<List<Integer>> list = new ArrayList<>();
+        if (root==null){
+            return list;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        TreeNode end = root;
+        while (!queue.isEmpty()){
+            List<Integer> list2 = new ArrayList<>();
+            // 当前队列的长度,就是这层元素个数
+            int len = queue.size();
+            // 遍历一层
+            for (int i = 0;i < len;i--){
+                TreeNode node = queue.poll();
+                list2.add(node.val);
+                if (node.left!=null){
+                    queue.offer(node.left);
+                }
+                if (node.right!=null){
+                    queue.offer(node.right);
+                }
+            }
+            list.add(list2);
+        }
+
+        return list;
+
+    }
+}
+```
+
+## 剑指 Offer 32 - III. 从上到下打印二叉树 III
+请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。
+
+ 
+
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回其层次遍历结果：
+
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+ 
+
+提示：
+
+节点总数 <= 1000
+
+链接：https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-iii-lcof/
+
+解法一：记录层数，反转列表
+
+```Java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> list = new ArrayList<>();
+        if (root==null){
+            return list;
+        }
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int n = 1;
+
+        while (!queue.isEmpty()){
+            List<Integer> list2 = new ArrayList<>();
+
+            int len = queue.size();
+
+            for (int i=0;i<len;i++){
+                TreeNode node = queue.poll();
+                list2.add(node.val);
+                if (node.left!=null){
+                    queue.offer(node.left);
+                }
+                if (node.right!=null){
+                    queue.offer(node.right);
+                }
+            }
+// 看题解有大佬用`list.size()%2`判断奇偶是真的秀
+            if (n%2==1){
+                list.add(list2);
+            }else {
+                Collections.reverse(list2);
+                list.add(list2);
+            }
+            n++;
+        }
+
+
+        return list;
+    }
+}
+```
+
