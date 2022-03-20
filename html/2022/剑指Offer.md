@@ -9,16 +9,16 @@
 - [剑指 Offer 11. 旋转数组的最小数字](#剑指-offer-11-旋转数组的最小数字)
 - [剑指 Offer 12. 矩阵中的路径](#剑指-offer-12-矩阵中的路径)
 - [剑指 Offer 13. 机器人的运动范围](#剑指-offer-13-机器人的运动范围)
-- [剑指 Offer 30. 包含min函数的栈](#剑指-offer-30-包含min函数的栈)
 - [剑指 Offer 24. 反转链表](#剑指-offer-24-反转链表)
-- [剑指 Offer 35. 复杂链表的复制](#剑指-offer-35-复杂链表的复制)
-- [剑指 Offer 58 - II. 左旋转字符串](#剑指-offer-58---ii-左旋转字符串)
-- [剑指 Offer 53 - I. 在排序数组中查找数字 I](#剑指-offer-53---i-在排序数组中查找数字-i)
-- [剑指 Offer 53 - II. 0～n-1中缺失的数字](#剑指-offer-53---ii-0n-1中缺失的数字)
-- [面试题50. 第一个只出现一次的字符](#面试题50-第一个只出现一次的字符)
+- [剑指 Offer 30. 包含min函数的栈](#剑指-offer-30-包含min函数的栈)
 - [面试题32 - I. 从上到下打印二叉树](#面试题32---i-从上到下打印二叉树)
 - [剑指 Offer 32 - II. 从上到下打印二叉树 II](#剑指-offer-32---ii-从上到下打印二叉树-ii)
 - [剑指 Offer 32 - III. 从上到下打印二叉树 III](#剑指-offer-32---iii-从上到下打印二叉树-iii)
+- [剑指 Offer 35. 复杂链表的复制](#剑指-offer-35-复杂链表的复制)
+- [剑指 Offer 53 - I. 在排序数组中查找数字 I](#剑指-offer-53---i-在排序数组中查找数字-i)
+- [剑指 Offer 53 - II. 0～n-1中缺失的数字](#剑指-offer-53---ii-0n-1中缺失的数字)
+- [面试题50. 第一个只出现一次的字符](#面试题50-第一个只出现一次的字符)
+- [剑指 Offer 58 - II. 左旋转字符串](#剑指-offer-58---ii-左旋转字符串)
 
 ## 剑指 Offer 03. 数组中重复的数字
 
@@ -757,74 +757,6 @@ class Solution {
 ```
 
 
-## 剑指 Offer 30. 包含min函数的栈
-定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用 min、push 及 pop 的时间复杂度都是 O(1)。
-
- 
-
-示例:
-
-MinStack minStack = new MinStack();
-minStack.push(-2);
-minStack.push(0);
-minStack.push(-3);
-minStack.min();   --> 返回 -3.
-minStack.pop();
-minStack.top();      --> 返回 0.
-minStack.min();   --> 返回 -2.
- 
-
-提示：
-
-各函数的调用总次数不超过 20000 次
-
-链接：https://leetcode-cn.com/problems/bao-han-minhan-shu-de-zhan-lcof/
-
-解法一：使用辅助栈  
-
-```Java
-class MinStack {
-    private final Stack<Integer> s1;
-    private final Stack<Integer> s2;
-    /** initialize your data structure here. */
-    public MinStack() {
-        this.s1 = new Stack<>();
-        this.s2 = new Stack<>();
-    }
-
-    public void push(int x) {
-        s1.push(x);
-        if (s2.isEmpty()||x<=s2.peek()){
-            s2.push(x);
-        }
-    }
-
-    public void pop() {
-        if (s1.pop().equals(s2.peek())){
-            s2.pop();
-        }
-
-    }
-
-    public int top() {
-        return s1.peek();
-    }
-
-    public int min() {
-        return s2.peek();
-    }
-}
-
-/**
- * Your MinStack object will be instantiated and called as such:
- * MinStack obj = new MinStack();
- * obj.push(x);
- * obj.pop();
- * int param_3 = obj.top();
- * int param_4 = obj.min();
- */
-```
-
 
 ## 剑指 Offer 24. 反转链表
 定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点。
@@ -912,6 +844,307 @@ class Solution {
 ```
 
 
+## 剑指 Offer 30. 包含min函数的栈
+定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用 min、push 及 pop 的时间复杂度都是 O(1)。
+
+ 
+
+示例:
+
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.min();   --> 返回 -3.
+minStack.pop();
+minStack.top();      --> 返回 0.
+minStack.min();   --> 返回 -2.
+ 
+
+提示：
+
+各函数的调用总次数不超过 20000 次
+
+链接：https://leetcode-cn.com/problems/bao-han-minhan-shu-de-zhan-lcof/
+
+解法一：使用辅助栈  
+
+```Java
+class MinStack {
+    private final Stack<Integer> s1;
+    private final Stack<Integer> s2;
+    /** initialize your data structure here. */
+    public MinStack() {
+        this.s1 = new Stack<>();
+        this.s2 = new Stack<>();
+    }
+
+    public void push(int x) {
+        s1.push(x);
+        if (s2.isEmpty()||x<=s2.peek()){
+            s2.push(x);
+        }
+    }
+
+    public void pop() {
+        if (s1.pop().equals(s2.peek())){
+            s2.pop();
+        }
+
+    }
+
+    public int top() {
+        return s1.peek();
+    }
+
+    public int min() {
+        return s2.peek();
+    }
+}
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack obj = new MinStack();
+ * obj.push(x);
+ * obj.pop();
+ * int param_3 = obj.top();
+ * int param_4 = obj.min();
+ */
+```
+
+
+
+## 面试题32 - I. 从上到下打印二叉树
+从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
+
+ 
+
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+返回：
+
+[3,9,20,15,7]
+ 
+
+提示：
+
+节点总数 <= 1000
+
+
+链接：https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-lcof/
+
+
+解法一：层序遍历
+
+```Java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int[] levelOrder(TreeNode root) {
+        if (root==null){
+            return new int[0];
+        }
+        List<Integer> list = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()){
+           TreeNode node =  queue.poll();
+           list.add(node.val);
+           if (node.left!=null){
+               queue.offer(node.left);
+           }
+           if (node.right!=null){
+                queue.offer(node.right);
+           }
+        }
+
+        int[] nums = new int[list.size()];
+
+        // nums = list.stream().mapToInt(Integer::valueOf).toArray();
+        for (int i=0;i<list.size();i++>){
+            nums[i] = list.get(i);
+        }
+
+        return nums;
+    }
+}
+```
+
+## 剑指 Offer 32 - II. 从上到下打印二叉树 II
+从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+
+ 
+
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+返回其层次遍历结果：
+
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+ 
+
+提示：
+
+节点总数 <= 1000
+
+链接：https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-ii-lcof/
+
+解法一：层序遍历，记录每层元素个数  
+
+```Java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+
+        List<List<Integer>> list = new ArrayList<>();
+        if (root==null){
+            return list;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        TreeNode end = root;
+        while (!queue.isEmpty()){
+            List<Integer> list2 = new ArrayList<>();
+            // 当前队列的长度,就是这层元素个数
+            int len = queue.size();
+            // 遍历一层
+            for (int i = 0;i < len;i--){
+                TreeNode node = queue.poll();
+                list2.add(node.val);
+                if (node.left!=null){
+                    queue.offer(node.left);
+                }
+                if (node.right!=null){
+                    queue.offer(node.right);
+                }
+            }
+            list.add(list2);
+        }
+
+        return list;
+
+    }
+}
+```
+
+## 剑指 Offer 32 - III. 从上到下打印二叉树 III
+请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。
+
+ 
+
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+返回其层次遍历结果：
+
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+ 
+
+提示：
+
+节点总数 <= 1000
+
+链接：https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-iii-lcof/
+
+解法一：记录层数，反转列表
+
+```Java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> list = new ArrayList<>();
+        if (root==null){
+            return list;
+        }
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int n = 1;
+
+        while (!queue.isEmpty()){
+            List<Integer> list2 = new ArrayList<>();
+
+            int len = queue.size();
+
+            for (int i=0;i<len;i++){
+                TreeNode node = queue.poll();
+                list2.add(node.val);
+                if (node.left!=null){
+                    queue.offer(node.left);
+                }
+                if (node.right!=null){
+                    queue.offer(node.right);
+                }
+            }
+// 看题解有大佬用`list.size()%2`判断奇偶
+            if (n%2==1){
+                list.add(list2);
+            }else {
+                Collections.reverse(list2);
+                list.add(list2);
+            }
+            n++;
+        }
+
+
+        return list;
+    }
+}
+```
+
+
+
 
 ## 剑指 Offer 35. 复杂链表的复制
 请实现 copyRandomList 函数，复制一个复杂链表。在复杂链表中，每个节点除了有一个 next 指针指向下一个节点，还有一个 random 指针指向链表中的任意节点或者 null。
@@ -993,60 +1226,7 @@ class Solution {
 }
 ```
 
-## 剑指 Offer 58 - II. 左旋转字符串
-字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
 
- 
-
-示例 1：
-
-输入: s = "abcdefg", k = 2
-输出: "cdefgab"
-示例 2：
-
-输入: s = "lrloseumgh", k = 6
-输出: "umghlrlose"
- 
-
-限制：
-
-1 <= k < s.length <= 10000
-
-链接：https://leetcode-cn.com/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/
-
-解法一：直接使用subString
-
-```Java
-class Solution {
-    public String reverseLeftWords(String s, int n) {
-        return s.substring(n, s.length()) + s.substring(0, n);
-    }
-}
-```
-
-解法二：用StringBuilder
-
-```Java
-class Solution {
-    public String reverseLeftWords(String s, int n) {
-        StringBuilder sb1 = new StringBuilder();
-        StringBuilder sb2 = new StringBuilder();
-
-        for (int i=0;i<s.length();i++){
-            if (i<n){
-                sb2.append(s.charAt(i));
-            }else{
-                sb1.append(s.charAt(i));
-            }
-        }
-        sb1.append(sb2.toString());
-
-        return sb1.toString();
-
-    }
-}
-
-```
 
 ## 剑指 Offer 53 - I. 在排序数组中查找数字 I
 统计一个数字在排序数组中出现的次数。
@@ -1151,6 +1331,11 @@ class Solution {
 }
 ```
 
+
+
+
+
+
 ## 面试题50. 第一个只出现一次的字符
 在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
 
@@ -1195,229 +1380,57 @@ class Solution {
 ```
 
 
-## 面试题32 - I. 从上到下打印二叉树
-从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
+## 剑指 Offer 58 - II. 左旋转字符串
+字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
 
  
 
-例如:
-给定二叉树: [3,9,20,null,null,15,7],
+示例 1：
 
-    3
-   / \
-  9  20
-    /  \
-   15   7
-返回：
+输入: s = "abcdefg", k = 2
+输出: "cdefgab"
+示例 2：
 
-[3,9,20,15,7]
+输入: s = "lrloseumgh", k = 6
+输出: "umghlrlose"
  
 
-提示：
+限制：
 
-节点总数 <= 1000
+1 <= k < s.length <= 10000
 
+链接：https://leetcode-cn.com/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/
 
-链接：https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-lcof/
-
-
-解法一：层序遍历
+解法一：直接使用subString
 
 ```Java
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
 class Solution {
-    public int[] levelOrder(TreeNode root) {
-        if (root==null){
-            return new int[0];
-        }
-        List<Integer> list = new ArrayList<>();
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
-        while (!queue.isEmpty()){
-           TreeNode node =  queue.poll();
-           list.add(node.val);
-           if (node.left!=null){
-               queue.offer(node.left);
-           }
-           if (node.right!=null){
-                queue.offer(node.right);
-           }
-        }
-
-        int[] nums = new int[list.size()];
-
-        // nums = list.stream().mapToInt(Integer::valueOf).toArray();
-        for (int i=0;i<list.size();i++>){
-            nums[i] = list.get(i);
-        }
-
-        return nums;
+    public String reverseLeftWords(String s, int n) {
+        return s.substring(n, s.length()) + s.substring(0, n);
     }
 }
 ```
 
-## 剑指 Offer 32 - II. 从上到下打印二叉树 II
-从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
-
- 
-
-例如:
-给定二叉树: [3,9,20,null,null,15,7],
-
-    3
-   / \
-  9  20
-    /  \
-   15   7
-返回其层次遍历结果：
-
-[
-  [3],
-  [9,20],
-  [15,7]
-]
- 
-
-提示：
-
-节点总数 <= 1000
-
-链接：https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-ii-lcof/
-
-解法一：层序遍历，记录每层元素个数  
+解法二：用StringBuilder
 
 ```Java
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
 class Solution {
-    public List<List<Integer>> levelOrder(TreeNode root) {
+    public String reverseLeftWords(String s, int n) {
+        StringBuilder sb1 = new StringBuilder();
+        StringBuilder sb2 = new StringBuilder();
 
-        List<List<Integer>> list = new ArrayList<>();
-        if (root==null){
-            return list;
-        }
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
-        
-        TreeNode end = root;
-        while (!queue.isEmpty()){
-            List<Integer> list2 = new ArrayList<>();
-            // 当前队列的长度,就是这层元素个数
-            int len = queue.size();
-            // 遍历一层
-            for (int i = 0;i < len;i--){
-                TreeNode node = queue.poll();
-                list2.add(node.val);
-                if (node.left!=null){
-                    queue.offer(node.left);
-                }
-                if (node.right!=null){
-                    queue.offer(node.right);
-                }
+        for (int i=0;i<s.length();i++){
+            if (i<n){
+                sb2.append(s.charAt(i));
+            }else{
+                sb1.append(s.charAt(i));
             }
-            list.add(list2);
         }
+        sb1.append(sb2.toString());
 
-        return list;
+        return sb1.toString();
 
     }
 }
+
 ```
-
-## 剑指 Offer 32 - III. 从上到下打印二叉树 III
-请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。
-
- 
-
-例如:
-给定二叉树: [3,9,20,null,null,15,7],
-
-    3
-   / \
-  9  20
-    /  \
-   15   7
-返回其层次遍历结果：
-
-[
-  [3],
-  [20,9],
-  [15,7]
-]
- 
-
-提示：
-
-节点总数 <= 1000
-
-链接：https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-iii-lcof/
-
-解法一：记录层数，反转列表
-
-```Java
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
-class Solution {
-    public List<List<Integer>> levelOrder(TreeNode root) {
-        List<List<Integer>> list = new ArrayList<>();
-        if (root==null){
-            return list;
-        }
-
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
-        int n = 1;
-
-        while (!queue.isEmpty()){
-            List<Integer> list2 = new ArrayList<>();
-
-            int len = queue.size();
-
-            for (int i=0;i<len;i++){
-                TreeNode node = queue.poll();
-                list2.add(node.val);
-                if (node.left!=null){
-                    queue.offer(node.left);
-                }
-                if (node.right!=null){
-                    queue.offer(node.right);
-                }
-            }
-// 看题解有大佬用`list.size()%2`判断奇偶是真的秀
-            if (n%2==1){
-                list.add(list2);
-            }else {
-                Collections.reverse(list2);
-                list.add(list2);
-            }
-            n++;
-        }
-
-
-        return list;
-    }
-}
-```
-
