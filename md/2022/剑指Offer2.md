@@ -2,6 +2,8 @@
 - [剑指 Offer 27. 二叉树的镜像](#剑指-offer-27-二叉树的镜像)
 - [剑指 Offer 28. 对称的二叉树](#剑指-offer-28-对称的二叉树)
 - [剑指 Offer 63. 股票的最大利润](#剑指-offer-63-股票的最大利润)
+- [剑指 Offer 42. 连续子数组的最大和](#剑指-offer-42-连续子数组的最大和)
+- [剑指 Offer 47. 礼物的最大价值](#剑指-offer-47-礼物的最大价值)
 
 ## 剑指 Offer 26. 树的子结构
 输入两棵二叉树A和B，判断B是不是A的子结构。(约定空树不是任意一个树的子结构)
@@ -281,3 +283,112 @@ public class Solution {
 来源：力扣（LeetCode）
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 ```
+
+
+## 剑指 Offer 42. 连续子数组的最大和
+输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。
+
+要求时间复杂度为O(n)。
+
+ 
+
+示例1:
+
+输入: nums = [-2,1,-3,4,-1,2,1,-5,4]
+输出: 6
+解释: 连续子数组 [4,-1,2,1] 的和最大，为 6。
+ 
+
+提示：
+
+1 <= arr.length <= 10^5
+-100 <= arr[i] <= 100
+注意：本题与主站 53 题相同：https://leetcode-cn.com/problems/maximum-subarray/
+
+链接：https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/
+
+解法一：动态规划
+
+求出每个位置的最大值，返回最大值中最大的数。  
+对于一个位置的最大值，dp[i] = Max(dp[i-1]+nums[i]，nums[i])
+
+```Java
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int max = nums[0];
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        for (int i=1;i<nums.length;i++){
+            if (nums[i]+dp[i-1]>=nums[i]){
+                dp[i] = nums[i]+dp[i-1];
+            }else{
+                dp[i] = nums[i];
+            }
+            if (max<dp[i]){
+                max = dp[i];
+            }
+        }
+
+        return max;
+    }
+}
+```
+
+## 剑指 Offer 47. 礼物的最大价值
+在一个 m*n 的棋盘的每一格都放有一个礼物，每个礼物都有一定的价值（价值大于 0）。你可以从棋盘的左上角开始拿格子里的礼物，并每次向右或者向下移动一格、直到到达棋盘的右下角。给定一个棋盘及其上面的礼物的价值，请计算你最多能拿到多少价值的礼物？
+
+ 
+
+示例 1:
+
+输入: 
+[
+  [1,3,1],
+  [1,5,1],
+  [4,2,1]
+]
+输出: 12
+解释: 路径 1→3→5→2→1 可以拿到最多价值的礼物
+ 
+
+提示：
+
+0 < grid.length <= 200
+0 < grid[0].length <= 200
+
+链接：https://leetcode-cn.com/problems/li-wu-de-zui-da-jie-zhi-lcof/
+
+解法一：动态规划
+
+用一个数组保存当前位置所能得到的最大价值，最后数组右下角就是整个棋盘能得到的最大价值。  
+
+由于仅能向右或向下移动，(i,j)的最大价值为Max（左边值，上边值）+ (i,j)的值，公式为：dp[i][j] = Max(dp[i-1][j],dp[i][j-1]) + grid[i][j]
+
+```Java
+class Solution {
+    public int maxValue(int[][] grid) {
+
+        int[][] dp = new int[grid.length][grid[0].length];
+        dp[0][0] = grid[0][0];
+        int m = grid.length;
+        int n = grid[0].length;
+
+        // 先初始化第一行和第一列，减少后面再处理
+        for (int i=1;i<grid.length;i++){
+            dp[i][0] = dp[i-1][0]+grid[i][0];
+        }
+        for (int i=1;i<grid[0].length;i++){
+            dp[0][i] = dp[0][i-1]+grid[0][i];
+        }
+
+        for (int i=1;i<grid.length;i++){
+            for (int j=1;j<grid[0].length;j++){
+                dp[i][j] = Math.max(dp[i-1][j],dp[i][j-1])+grid[i][j];
+            }
+        }
+
+        return dp[m-1][n-1];
+    }
+}
+```
+
