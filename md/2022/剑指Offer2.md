@@ -4,6 +4,8 @@
 - [剑指 Offer 63. 股票的最大利润](#剑指-offer-63-股票的最大利润)
 - [剑指 Offer 42. 连续子数组的最大和](#剑指-offer-42-连续子数组的最大和)
 - [剑指 Offer 47. 礼物的最大价值](#剑指-offer-47-礼物的最大价值)
+- [剑指 Offer 46. 把数字翻译成字符串](#剑指-offer-46-把数字翻译成字符串)
+- [剑指 Offer 48. 最长不含重复字符的子字符串](#剑指-offer-48-最长不含重复字符的子字符串)
 
 ## 剑指 Offer 26. 树的子结构
 输入两棵二叉树A和B，判断B是不是A的子结构。(约定空树不是任意一个树的子结构)
@@ -392,3 +394,144 @@ class Solution {
 }
 ```
 
+## 剑指 Offer 46. 把数字翻译成字符串
+给定一个数字，我们按照如下规则把它翻译为字符串：0 翻译成 “a” ，1 翻译成 “b”，……，11 翻译成 “l”，……，25 翻译成 “z”。一个数字可能有多个翻译。请编程实现一个函数，用来计算一个数字有多少种不同的翻译方法。
+
+ 
+
+示例 1:
+
+输入: 12258
+输出: 5
+解释: 12258有5种不同的翻译，分别是"bccfi", "bwfi", "bczi", "mcfi"和"mzi"
+ 
+
+提示：
+
+0 <= num < 231
+
+链接：https://leetcode-cn.com/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/
+
+解法一：动态规划
+
+将求解过程分解，12258分解为：1->12->122->1225->12258。  
+每个数字有两种情况：可以和前面数字组合为一个字母（和前面的数字组成大于9小于26的数字）对结果贡献的递推方程：f(i) = f(i-1) + f(i-2)；不可以和前面数字组合为一个字母，对结果贡献为0。针对不同情况进行判断.
+
+```Java
+class Solution {
+    public int translateNum(int num) {
+        String str = String.valueOf(num);
+
+        int[] dp = new int[str.length()];
+        dp[0] = 1;
+
+        for (int i=1;i<str.length();i++){
+             int i1 = Integer.parseInt(str.substring(i - 1, i + 1));
+            if (i1<26&& i1 >9){
+                if (i>1){
+                    dp[i] = dp[i-1] + dp[i-2];
+                }else{
+                    dp[i] = dp[i-1]+1;
+                }
+
+            }else{
+                dp[i] = dp[i-1];
+            }
+
+        }
+        return dp[str.length()-1];
+
+    }
+}
+```
+
+
+## 剑指 Offer 48. 最长不含重复字符的子字符串
+请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。
+
+ 
+
+示例 1:
+
+输入: "abcabcbb"
+输出: 3 
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+示例 2:
+
+输入: "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+示例 3:
+
+输入: "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+     请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+ 
+
+提示：
+
+s.length <= 40000
+
+链接：https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/
+
+解法一：遍历生成子串
+
+按条件生成所有不重复子串，用一个变量保存最长的子串
+
+
+```Java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if (s==null||s.isEmpty()){
+            return 0;
+        }
+        String maxS = String.valueOf(s.charAt(0));
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(s.charAt(0));
+
+
+        for (int i=1;i<s.length();i++){
+
+            if (stringBuilder.indexOf(String.valueOf(s.charAt(i)))>-1){
+                if (maxS.length()<stringBuilder.length()){
+                    maxS = stringBuilder.toString();
+                }
+                stringBuilder = new StringBuilder(stringBuilder.substring(stringBuilder.indexOf(String.valueOf(s.charAt(i)))+1, stringBuilder.length()));
+            }
+            stringBuilder.append(s.charAt(i));
+            if (maxS.length()<stringBuilder.length()){
+                maxS = stringBuilder.toString();
+            }
+        }
+        
+        return maxS.length();
+    }
+}
+```
+
+解法二：动态规划 + 哈希表
+
+
+双指针，i记录元素首次出现位置，j记录本次出现位置，相减就可得不含重复字符的长度。需要用一个哈希表记录元素的位置
+
+```Java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> dic = new HashMap<>();
+        int res = 0, tmp = 0;
+        for(int j = 0; j < s.length(); j++) {
+            int i = dic.getOrDefault(s.charAt(j), -1); // 获取索引 i
+            dic.put(s.charAt(j), j); // 更新哈希表
+            tmp = tmp < j - i ? tmp + 1 : j - i; // dp[j - 1] -> dp[j]
+            res = Math.max(res, tmp); // max(dp[j - 1], dp[j])
+        }
+        return res;
+    }
+}
+
+作者：jyd
+链接：https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/solution/mian-shi-ti-48-zui-chang-bu-han-zhong-fu-zi-fu-d-9/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
