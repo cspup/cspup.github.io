@@ -6,6 +6,8 @@
 - [剑指 Offer 47. 礼物的最大价值](#剑指-offer-47-礼物的最大价值)
 - [剑指 Offer 46. 把数字翻译成字符串](#剑指-offer-46-把数字翻译成字符串)
 - [剑指 Offer 48. 最长不含重复字符的子字符串](#剑指-offer-48-最长不含重复字符的子字符串)
+- [剑指 Offer 18. 删除链表的节点](#剑指-offer-18-删除链表的节点)
+- [剑指 Offer 22. 链表中倒数第k个节点](#剑指-offer-22-链表中倒数第k个节点)
 
 ## 剑指 Offer 26. 树的子结构
 输入两棵二叉树A和B，判断B是不是A的子结构。(约定空树不是任意一个树的子结构)
@@ -534,4 +536,114 @@ class Solution {
 链接：https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/solution/mian-shi-ti-48-zui-chang-bu-han-zhong-fu-zi-fu-d-9/
 来源：力扣（LeetCode）
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+## 剑指 Offer 18. 删除链表的节点
+给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。
+
+返回删除后的链表的头节点。
+
+注意：此题对比原题有改动
+
+示例 1:
+
+输入: head = [4,5,1,9], val = 5
+输出: [4,1,9]
+解释: 给定你链表中值为 5 的第二个节点，那么在调用了你的函数之后，该链表应变为 4 -> 1 -> 9.
+示例 2:
+
+输入: head = [4,5,1,9], val = 1
+输出: [4,5,9]
+解释: 给定你链表中值为 1 的第三个节点，那么在调用了你的函数之后，该链表应变为 4 -> 5 -> 9.
+ 
+
+说明：
+
+题目保证链表中节点的值互不相同
+若使用 C 或 C++ 语言，你不需要 free 或 delete 被删除的节点
+
+链接：https://leetcode-cn.com/problems/shan-chu-lian-biao-de-jie-dian-lcof/
+
+解法一：
+
+```Java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode deleteNode(ListNode head, int val) {
+        if (head==null){
+            return null;
+        }
+        if (head.val == val){
+            return head.next;
+        }
+        ListNode h1 = head;
+        
+        ListNode last = head;
+        head = head.next;
+        while (head!=null){
+            if (head.val==val){
+                last.next = head.next;
+                break;
+            }else{
+                last = head;
+                head = head.next;
+            }
+        }
+        return h1;
+    }
+}
+```
+
+## 剑指 Offer 22. 链表中倒数第k个节点
+输入一个链表，输出该链表中倒数第k个节点。为了符合大多数人的习惯，本题从1开始计数，即链表的尾节点是倒数第1个节点。
+
+例如，一个链表有 6 个节点，从头节点开始，它们的值依次是 1、2、3、4、5、6。这个链表的倒数第 3 个节点是值为 4 的节点。
+
+ 
+
+示例：
+
+给定一个链表: 1->2->3->4->5, 和 k = 2.
+
+返回链表 4->5.
+
+链接：https://leetcode-cn.com/problems/lian-biao-zhong-dao-shu-di-kge-jie-dian-lcof/
+
+
+解法一：双指针(快慢指针)
+
+
+```Java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode getKthFromEnd(ListNode head, int k) {
+        ListNode p1 = head;
+        ListNode p2 = head;
+        int i=0;
+        while (p2!=null&&i++<k){
+            p2 = p2.next;
+        }
+
+        while (p2!=null){
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+
+        return p1;
+    }
+}
 ```
