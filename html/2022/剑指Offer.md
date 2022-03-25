@@ -635,7 +635,7 @@ class Solution {
 
 例如，在下面的 3×4 的矩阵中包含单词 "ABCCED"（单词中的字母已标出）。
 
-![图片](https://assets.leetcode.com/uploads/2020/11/04/word2.jpg)
+![图片](http://img.cspup.com/img/f4a753b3dfe643ee8f3c41654222a762.jpeg)
 
  
 
@@ -1153,21 +1153,21 @@ class Solution {
 
 示例 1：
 
-![示例 1](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/01/09/e1.png)
+![示例 1](http://img.cspup.com/img/b4dffda4006149f084cf8b90916d5748.png)
 
 输入：head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
 输出：[[7,null],[13,0],[11,4],[10,2],[1,0]]  
 
 示例 2：
 
-![示例 2](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/01/09/e2.png)
+![示例 2](http://img.cspup.com/img/089f394dd7fe4aaeadef231bd5a47c74.png)
 
 输入：head = [[1,1],[2,1]]
 输出：[[1,1],[2,1]]  
 
 示例 3：
 
-![示例 3](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/01/09/e3.png)
+![示例 3](http://img.cspup.com/img/65a1fc0b59e14e90990082b5fb4a35cc.png)
 
 输入：head = [[3,null],[3,0],[3,null]]
 输出：[[3,null],[3,0],[3,null]]  

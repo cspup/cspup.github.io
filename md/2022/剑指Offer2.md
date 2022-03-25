@@ -726,7 +726,7 @@ class Solution {
 输入两个链表，找出它们的第一个公共节点。
 
 如下面的两个链表：
-![示例0](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_statement.png)
+![示例0](http://img.cspup.com/img/79da65cc25c140d485edd51a40696d7d.png)
 
 
 
@@ -735,7 +735,7 @@ class Solution {
  
 
 示例 1：
-![示例1](https://assets.leetcode.com/uploads/2018/12/13/160_example_1.png)
+![示例1](http://img.cspup.com/img/4aed31d1cd64468bbfe014ee9545df9e.png)
 
 输入：intersectVal = 8, listA = [4,1,8,4,5], listB = [5,0,1,8,4,5], skipA = 2, skipB = 3
 输出：Reference of the node with value = 8
@@ -744,7 +744,7 @@ class Solution {
 
 示例 2：
 
-![示例2](https://assets.leetcode.com/uploads/2018/12/13/160_example_2.png)
+![示例2](http://img.cspup.com/img/0e130aa40d3246b38f54097998b4fc4e.png)
 
 
 
@@ -756,7 +756,7 @@ class Solution {
 
 示例 3：
 
-![示例3](https://assets.leetcode.com/uploads/2018/12/13/160_example_3.png)
+![示例3](http://img.cspup.com/img/ac6f5e905dc54587af1012efba9471cd.png)
 
 
 
