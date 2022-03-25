@@ -10,6 +10,9 @@
 - [剑指 Offer 22. 链表中倒数第k个节点](#剑指-offer-22-链表中倒数第k个节点)
 - [剑指 Offer 25. 合并两个排序的链表](#剑指-offer-25-合并两个排序的链表)
 - [剑指 Offer 52. 两个链表的第一个公共节点](#剑指-offer-52-两个链表的第一个公共节点)
+- [剑指 Offer 21. 调整数组顺序使奇数位于偶数前面](#剑指-offer-21-调整数组顺序使奇数位于偶数前面)
+- [剑指 Offer 57. 和为s的两个数字](#剑指-offer-57-和为s的两个数字)
+- [剑指 Offer 58 - I. 翻转单词顺序](#剑指-offer-58---i-翻转单词顺序)
 
 ## 剑指 Offer 26. 树的子结构
 输入两棵二叉树A和B，判断B是不是A的子结构。(约定空树不是任意一个树的子结构)
@@ -854,6 +857,183 @@ public class Solution {
 
 作者：LeetCode-Solution
 链接：https://leetcode-cn.com/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/solution/liang-ge-lian-biao-de-di-yi-ge-gong-gong-pzbs/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+
+## 剑指 Offer 21. 调整数组顺序使奇数位于偶数前面
+输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数在数组的前半部分，所有偶数在数组的后半部分。
+
+ 
+
+示例：
+
+输入：nums = [1,2,3,4]
+输出：[1,3,2,4] 
+注：[3,1,2,4] 也是正确的答案之一。
+ 
+
+提示：
+
+1. 0 <= nums.length <= 50000
+2. 0 <= nums[i] <= 10000
+
+链接：https://leetcode-cn.com/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/
+
+
+解法一：双指针
+
+```Java
+class Solution {
+    public int[] exchange(int[] nums) {
+        int low = 0;
+        int high = nums.length-1;
+
+        while (low<high){
+            if (nums[low]%2==0&&nums[high]%2!=0){
+                int tmp = nums[low];
+                nums[low] = nums[high];
+                nums[high] = tmp;
+                low++;
+                high--;
+            }else if (nums[low]%2!=0&&nums[high]%2==0){
+                low++;
+                high--;
+            }else if (nums[low]%2==0&&nums[high]%2==0){
+                high--;
+            }else if (nums[low]%2!=0&&nums[high]%2!=0){
+                low++;
+            }
+        }
+        return nums;
+
+    }
+}
+```
+
+
+## 剑指 Offer 57. 和为s的两个数字
+输入一个递增排序的数组和一个数字s，在数组中查找两个数，使得它们的和正好是s。如果有多对数字的和等于s，则输出任意一对即可。
+
+ 
+
+示例 1：
+
+输入：nums = [2,7,11,15], target = 9
+输出：[2,7] 或者 [7,2]
+示例 2：
+
+输入：nums = [10,26,30,31,47,60], target = 40
+输出：[10,30] 或者 [30,10]
+ 
+
+限制：
+
+1. 1 <= nums.length <= 10^5
+2. 1 <= nums[i] <= 10^6
+
+链接：https://leetcode-cn.com/problems/he-wei-sde-liang-ge-shu-zi-lcof/
+
+解法一：双指针
+
+
+```Java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int low = 0;
+        int high = nums.length-1;
+
+        while (low<high){
+            if (nums[low]+nums[high]<target){
+                low++;
+            }else if (nums[low]+nums[high]>target){
+                high--;
+            }else{
+                int[] n = new int[2];
+                n[0] = nums[low];
+                n[1] = nums[high];
+                return n;
+            }
+        }
+        return null;
+    }
+}
+```
+
+
+## 剑指 Offer 58 - I. 翻转单词顺序
+输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。为简单起见，标点符号和普通字母一样处理。例如输入字符串"I am a student. "，则输出"student. a am I"。
+
+ 
+
+示例 1：
+
+输入: "the sky is blue"
+输出: "blue is sky the"
+示例 2：
+
+输入: "  hello world!  "
+输出: "world! hello"
+解释: 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
+示例 3：
+
+输入: "a good   example"
+输出: "example good a"
+解释: 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。
+ 
+
+说明：
+
+无空格字符构成一个单词。
+输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
+如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。
+
+链接：https://leetcode-cn.com/problems/fan-zhuan-dan-ci-shun-xu-lcof/
+
+
+解法一：使用Java库函数和正则
+
+```Java
+class Solution {
+    public String reverseWords(String s) {
+        String[] strs = s.split("\\s+");
+        int low = 0;
+        int high = strs.length-1;
+        while (low<high){
+            String tmp = strs[low];
+            strs[low] = strs[high];
+            strs[high] = tmp;
+            low++;
+            high--;
+        }
+
+        return  String.join(" ", strs).trim();
+    }
+}
+```
+
+解法二：双指针
+
+
+```Java
+class Solution {
+    public String reverseWords(String s) {
+        s = s.trim(); // 删除首尾空格
+        int j = s.length() - 1, i = j;
+        StringBuilder res = new StringBuilder();
+        while(i >= 0) {
+            while(i >= 0 && s.charAt(i) != ' ') i--; // 搜索首个空格
+            res.append(s.substring(i + 1, j + 1) + " "); // 添加单词
+            while(i >= 0 && s.charAt(i) == ' ') i--; // 跳过单词间空格
+            j = i; // j 指向下个单词的尾字符
+        }
+        return res.toString().trim(); // 转化为字符串并返回
+    }
+}
+
+作者：jyd
+链接：https://leetcode-cn.com/problems/fan-zhuan-dan-ci-shun-xu-lcof/solution/mian-shi-ti-58-i-fan-zhuan-dan-ci-shun-xu-shuang-z/
 来源：力扣（LeetCode）
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 ```

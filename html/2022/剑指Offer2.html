@@ -38,6 +38,11 @@
 <li><a href="#剑指-offer-48-最长不含重复字符的子字符串">剑指 Offer 48. 最长不含重复字符的子字符串</a></li>
 <li><a href="#剑指-offer-18-删除链表的节点">剑指 Offer 18. 删除链表的节点</a></li>
 <li><a href="#剑指-offer-22-链表中倒数第k个节点">剑指 Offer 22. 链表中倒数第k个节点</a></li>
+<li><a href="#剑指-offer-25-合并两个排序的链表">剑指 Offer 25. 合并两个排序的链表</a></li>
+<li><a href="#剑指-offer-52-两个链表的第一个公共节点">剑指 Offer 52. 两个链表的第一个公共节点</a></li>
+<li><a href="#剑指-offer-21-调整数组顺序使奇数位于偶数前面">剑指 Offer 21. 调整数组顺序使奇数位于偶数前面</a></li>
+<li><a href="#剑指-offer-57-和为s的两个数字">剑指 Offer 57. 和为s的两个数字</a></li>
+<li><a href="#剑指-offer-58---i-翻转单词顺序">剑指 Offer 58 - I. 翻转单词顺序</a></li>
 </ul>
 <h2 id="剑指-offer-26-树的子结构">剑指 Offer 26. 树的子结构</h2>
 <p>输入两棵二叉树A和B，判断B是不是A的子结构。(约定空树不是任意一个树的子结构)</p>
@@ -525,6 +530,301 @@ class Solution {
         return p1;
     }
 }
+</code></pre>
+<h2 id="剑指-offer-25-合并两个排序的链表">剑指 Offer 25. 合并两个排序的链表</h2>
+<p>输入两个递增排序的链表，合并这两个链表并使新链表中的节点仍然是递增排序的。</p>
+<p>示例1：</p>
+<p>输入：1-&gt;2-&gt;4, 1-&gt;3-&gt;4
+输出：1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4
+限制：</p>
+<p>0 &lt;= 链表长度 &lt;= 1000</p>
+<p>解法一：遍历、比较、逐个添加到新的头节点</p>
+<pre><code class="language-Java">/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1==null){
+            return l2;
+        }
+        if (l2==null){
+            return l1;
+        }
+        ListNode head;
+        ListNode l;
+        if (l1.val&gt;l2.val){
+            l = l2;
+            l2 = l2.next;
+        }else{
+            l = l1;
+            l1 = l1.next;
+        }
+        head = l;
+        while (l1!=null&amp;&amp;l2!=null){
+            if (l1.val&lt;l2.val){
+                l.next = l1;
+                l = l.next;
+                l1 = l1.next;
+            }else {
+                l.next = l2;
+                l = l.next;
+                l2 = l2.next;
+            }
+        }
+        while (l1!=null){
+            l.next = l1;
+            l = l.next;
+            l1 = l1.next;
+        }
+        while (l2!=null){
+            l.next = l2;
+            l = l.next;
+            l2 = l2.next;
+        }
+        return head;
+    }
+}
+</code></pre>
+<h2 id="剑指-offer-52-两个链表的第一个公共节点">剑指 Offer 52. 两个链表的第一个公共节点</h2>
+<p>输入两个链表，找出它们的第一个公共节点。</p>
+<p>如下面的两个链表：
+<img src="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_statement.png" alt="示例0" /></p>
+<p>在节点 c1 开始相交。</p>
+<p>示例 1：
+<img src="https://assets.leetcode.com/uploads/2018/12/13/160_example_1.png" alt="示例1" /></p>
+<p>输入：intersectVal = 8, listA = [4,1,8,4,5], listB = [5,0,1,8,4,5], skipA = 2, skipB = 3
+输出：Reference of the node with value = 8
+输入解释：相交节点的值为 8 （注意，如果两个列表相交则不能为 0）。从各自的表头开始算起，链表 A 为 [4,1,8,4,5]，链表 B 为 [5,0,1,8,4,5]。在 A 中，相交节点前有 2 个节点；在 B 中，相交节点前有 3 个节点。</p>
+<p>示例 2：</p>
+<p><img src="https://assets.leetcode.com/uploads/2018/12/13/160_example_2.png" alt="示例2" /></p>
+<p>输入：intersectVal = 2, listA = [0,9,1,2,4], listB = [3,2,4], skipA = 3, skipB = 1
+输出：Reference of the node with value = 2
+输入解释：相交节点的值为 2 （注意，如果两个列表相交则不能为 0）。从各自的表头开始算起，链表 A 为 [0,9,1,2,4]，链表 B 为 [3,2,4]。在 A 中，相交节点前有 3 个节点；在 B 中，相交节点前有 1 个节点。</p>
+<p>示例 3：</p>
+<p><img src="https://assets.leetcode.com/uploads/2018/12/13/160_example_3.png" alt="示例3" /></p>
+<p>输入：intersectVal = 0, listA = [2,6,4], listB = [1,5], skipA = 3, skipB = 2
+输出：null
+输入解释：从各自的表头开始算起，链表 A 为 [2,6,4]，链表 B 为 [1,5]。由于这两个链表不相交，所以 intersectVal 必须为 0，而 skipA 和 skipB 可以是任意值。
+解释：这两个链表不相交，因此返回 null。</p>
+<p>注意：</p>
+<p>如果两个链表没有交点，返回 null.
+在返回结果后，两个链表仍须保持原有的结构。
+可假定整个链表结构中没有循环。
+程序尽量满足 O(n) 时间复杂度，且仅用 O(1) 内存。
+本题与主站 160 题相同：https://leetcode-cn.com/problems/intersection-of-two-linked-lists/</p>
+<p>链接：https://leetcode-cn.com/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/</p>
+<p>解法一：计算两个链表的长度差，让长的链表先走几步，再让两个链表同步遍历寻找相同的节点</p>
+<pre><code class="language-Java">/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        int a=0;
+        int b=0;
+        ListNode h1 = headA;
+        ListNode h2 = headB;
+        while (headA!=null&amp;&amp;headB!=null){
+            headA = headA.next;
+            headB = headB.next;
+            a++;
+            b++;
+        }
+        while (headA!=null){
+            a++;
+            headA = headA.next;
+        }
+        while (headB!=null){
+            b++;
+            headB = headB.next;
+        }
+
+        if (a&gt;b){
+            for (int i=0;i&lt;a-b;i++){
+                h1 = h1.next;
+            }
+        }
+        if (b&gt;a){
+            for (int i=0;i&lt;b-a;i++){
+                h2 = h2.next;
+            }
+        }
+
+        while(h1!=null&amp;&amp;h2!=null){
+            if (h1==h2){
+                return h1;
+            }else{
+                h1 = h1.next;
+                h2 = h2.next;
+            }
+        }
+        return null;
+    }
+}
+</code></pre>
+<p>解法二：双指针</p>
+<pre><code class="language-Java">public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
+            return null;
+        }
+        ListNode pA = headA, pB = headB;
+        while (pA != pB) {
+            pA = pA == null ? headB : pA.next;
+            pB = pB == null ? headA : pB.next;
+        }
+        return pA;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/solution/liang-ge-lian-biao-de-di-yi-ge-gong-gong-pzbs/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+</code></pre>
+<h2 id="剑指-offer-21-调整数组顺序使奇数位于偶数前面">剑指 Offer 21. 调整数组顺序使奇数位于偶数前面</h2>
+<p>输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数在数组的前半部分，所有偶数在数组的后半部分。</p>
+<p>示例：</p>
+<p>输入：nums = [1,2,3,4]
+输出：[1,3,2,4]
+注：[3,1,2,4] 也是正确的答案之一。</p>
+<p>提示：</p>
+<ol>
+<li>0 &lt;= nums.length &lt;= 50000</li>
+<li>0 &lt;= nums[i] &lt;= 10000</li>
+</ol>
+<p>链接：https://leetcode-cn.com/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/</p>
+<p>解法一：双指针</p>
+<pre><code class="language-Java">class Solution {
+    public int[] exchange(int[] nums) {
+        int low = 0;
+        int high = nums.length-1;
+
+        while (low&lt;high){
+            if (nums[low]%2==0&amp;&amp;nums[high]%2!=0){
+                int tmp = nums[low];
+                nums[low] = nums[high];
+                nums[high] = tmp;
+                low++;
+                high--;
+            }else if (nums[low]%2!=0&amp;&amp;nums[high]%2==0){
+                low++;
+                high--;
+            }else if (nums[low]%2==0&amp;&amp;nums[high]%2==0){
+                high--;
+            }else if (nums[low]%2!=0&amp;&amp;nums[high]%2!=0){
+                low++;
+            }
+        }
+        return nums;
+
+    }
+}
+</code></pre>
+<h2 id="剑指-offer-57-和为s的两个数字">剑指 Offer 57. 和为s的两个数字</h2>
+<p>输入一个递增排序的数组和一个数字s，在数组中查找两个数，使得它们的和正好是s。如果有多对数字的和等于s，则输出任意一对即可。</p>
+<p>示例 1：</p>
+<p>输入：nums = [2,7,11,15], target = 9
+输出：[2,7] 或者 [7,2]
+示例 2：</p>
+<p>输入：nums = [10,26,30,31,47,60], target = 40
+输出：[10,30] 或者 [30,10]</p>
+<p>限制：</p>
+<ol>
+<li>1 &lt;= nums.length &lt;= 10^5</li>
+<li>1 &lt;= nums[i] &lt;= 10^6</li>
+</ol>
+<p>链接：https://leetcode-cn.com/problems/he-wei-sde-liang-ge-shu-zi-lcof/</p>
+<p>解法一：双指针</p>
+<pre><code class="language-Java">class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int low = 0;
+        int high = nums.length-1;
+
+        while (low&lt;high){
+            if (nums[low]+nums[high]&lt;target){
+                low++;
+            }else if (nums[low]+nums[high]&gt;target){
+                high--;
+            }else{
+                int[] n = new int[2];
+                n[0] = nums[low];
+                n[1] = nums[high];
+                return n;
+            }
+        }
+        return null;
+    }
+}
+</code></pre>
+<h2 id="剑指-offer-58---i-翻转单词顺序">剑指 Offer 58 - I. 翻转单词顺序</h2>
+<p>输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。为简单起见，标点符号和普通字母一样处理。例如输入字符串&quot;I am a student. &quot;，则输出&quot;student. a am I&quot;。</p>
+<p>示例 1：</p>
+<p>输入: &quot;the sky is blue&quot;
+输出: &quot;blue is sky the&quot;
+示例 2：</p>
+<p>输入: &quot;  hello world!  &quot;
+输出: &quot;world! hello&quot;
+解释: 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
+示例 3：</p>
+<p>输入: &quot;a good   example&quot;
+输出: &quot;example good a&quot;
+解释: 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。</p>
+<p>说明：</p>
+<p>无空格字符构成一个单词。
+输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
+如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。</p>
+<p>链接：https://leetcode-cn.com/problems/fan-zhuan-dan-ci-shun-xu-lcof/</p>
+<p>解法一：使用Java库函数和正则</p>
+<pre><code class="language-Java">class Solution {
+    public String reverseWords(String s) {
+        String[] strs = s.split(&quot;\\s+&quot;);
+        int low = 0;
+        int high = strs.length-1;
+        while (low&lt;high){
+            String tmp = strs[low];
+            strs[low] = strs[high];
+            strs[high] = tmp;
+            low++;
+            high--;
+        }
+
+        return  String.join(&quot; &quot;, strs).trim();
+    }
+}
+</code></pre>
+<p>解法二：双指针</p>
+<pre><code class="language-Java">class Solution {
+    public String reverseWords(String s) {
+        s = s.trim(); // 删除首尾空格
+        int j = s.length() - 1, i = j;
+        StringBuilder res = new StringBuilder();
+        while(i &gt;= 0) {
+            while(i &gt;= 0 &amp;&amp; s.charAt(i) != ' ') i--; // 搜索首个空格
+            res.append(s.substring(i + 1, j + 1) + &quot; &quot;); // 添加单词
+            while(i &gt;= 0 &amp;&amp; s.charAt(i) == ' ') i--; // 跳过单词间空格
+            j = i; // j 指向下个单词的尾字符
+        }
+        return res.toString().trim(); // 转化为字符串并返回
+    }
+}
+
+作者：jyd
+链接：https://leetcode-cn.com/problems/fan-zhuan-dan-ci-shun-xu-lcof/solution/mian-shi-ti-58-i-fan-zhuan-dan-ci-shun-xu-shuang-z/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 </code></pre>
 
 </div>
