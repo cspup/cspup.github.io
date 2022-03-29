@@ -3,6 +3,8 @@
 - [剑指 Offer 54. 二叉搜索树的第k大节点](#剑指-offer-54-二叉搜索树的第k大节点)
 - [剑指 Offer 45. 把数组排成最小的数](#剑指-offer-45-把数组排成最小的数)
 - [剑指 Offer 61. 扑克牌中的顺子](#剑指-offer-61-扑克牌中的顺子)
+- [剑指 Offer 40. 最小的k个数](#剑指-offer-40-最小的k个数)
+- [剑指 Offer 41. 数据流中的中位数](#剑指-offer-41-数据流中的中位数)
 
 ## 剑指 Offer 34. 二叉树中和为某一值的路径
 给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
@@ -410,4 +412,273 @@ class Solution {
     }
 }
 
+```
+
+
+## 剑指 Offer 40. 最小的k个数
+输入整数数组 arr ，找出其中最小的 k 个数。例如，输入4、5、1、6、2、7、3、8这8个数字，则最小的4个数字是1、2、3、4。
+
+ 
+
+示例 1：
+```
+输入：arr = [3,2,1], k = 2
+输出：[1,2] 或者 [2,1]
+```
+示例 2：
+```
+输入：arr = [0,1,2,1], k = 1
+输出：[0]
+```
+
+限制：
+
+0 <= k <= arr.length <= 10000
+0 <= arr[i] <= 10000
+
+链接:https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/
+
+
+解法一：排序后取前k个数
+
+
+```Java
+class Solution {
+    public int[] getLeastNumbers(int[] arr, int k) {
+        Arrays.sort(arr);
+        int[] nums = new int[k];
+        for (int i=0;i<k;i++){
+            nums[i] = arr[i];
+        }
+        return nums;
+    }
+}
+```
+
+解法二：冒泡排序只对前k个排序(k为数组长度时可能会超时)
+
+```Java
+class Solution {
+    public int[] getLeastNumbers(int[] arr, int k) {
+        int[] nums = new int[k];
+        for (int i=0;i<k;i++){
+            for (int j=i+1;j<arr.length;j++){
+                if (arr[i]>arr[j]){
+                    int tmp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = tmp;
+                }
+            }
+            nums[i] = arr[i];
+        }
+        return nums;
+    }
+}
+```
+
+解法三：堆(优先队列)
+
+```Java
+
+class Solution {
+    public int[] getLeastNumbers(int[] arr, int k) {
+        int[] vec = new int[k];
+        if (k == 0) { // 排除 0 的情况
+            return vec;
+        }
+        PriorityQueue<Integer> queue = new PriorityQueue<Integer>(new Comparator<Integer>() {
+            public int compare(Integer num1, Integer num2) {
+                return num2 - num1;
+            }
+        });
+        for (int i = 0; i < k; ++i) {
+            queue.offer(arr[i]);
+        }
+        for (int i = k; i < arr.length; ++i) {
+            if (queue.peek() > arr[i]) {
+                queue.poll();
+                queue.offer(arr[i]);
+            }
+        }
+        for (int i = 0; i < k; ++i) {
+            vec[i] = queue.poll();
+        }
+        return vec;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/solution/zui-xiao-de-kge-shu-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+
+解法四：快排思想  
+将比第k个小的数放在左边，比第K个小的数放在右边
+
+```Java
+class Solution {
+    public int[] getLeastNumbers(int[] arr, int k) {
+        randomizedSelected(arr, 0, arr.length - 1, k);
+        int[] vec = new int[k];
+        for (int i = 0; i < k; ++i) {
+            vec[i] = arr[i];
+        }
+        return vec;
+    }
+
+    private void randomizedSelected(int[] arr, int l, int r, int k) {
+        if (l >= r) {
+            return;
+        }
+        int pos = randomizedPartition(arr, l, r);
+        int num = pos - l + 1;
+        if (k == num) {
+            return;
+        } else if (k < num) {
+            randomizedSelected(arr, l, pos - 1, k);
+        } else {
+            randomizedSelected(arr, pos + 1, r, k - num);
+        }
+    }
+
+    // 基于随机的划分
+    private int randomizedPartition(int[] nums, int l, int r) {
+        int i = new Random().nextInt(r - l + 1) + l;
+        swap(nums, r, i);
+        return partition(nums, l, r);
+    }
+
+    private int partition(int[] nums, int l, int r) {
+        int pivot = nums[r];
+        int i = l - 1;
+        for (int j = l; j <= r - 1; ++j) {
+            if (nums[j] <= pivot) {
+                i = i + 1;
+                swap(nums, i, j);
+            }
+        }
+        swap(nums, i + 1, r);
+        return i + 1;
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/solution/zui-xiao-de-kge-shu-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+```
+
+
+## 剑指 Offer 41. 数据流中的中位数
+如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。
+
+例如，
+
+[2,3,4] 的中位数是 3
+
+[2,3] 的中位数是 (2 + 3) / 2 = 2.5
+
+设计一个支持以下两种操作的数据结构：
+
+void addNum(int num) - 从数据流中添加一个整数到数据结构中。
+double findMedian() - 返回目前所有元素的中位数。
+示例 1：
+```
+输入：
+["MedianFinder","addNum","addNum","findMedian","addNum","findMedian"]
+[[],[1],[2],[],[3],[]]
+输出：[null,null,null,1.50000,null,2.00000]
+```
+示例 2：
+```
+输入：
+["MedianFinder","addNum","findMedian","addNum","findMedian"]
+[[],[2],[],[3],[]]
+输出：[null,null,2.00000,null,2.50000]
+ 
+```
+限制：
+
+最多会对 addNum、findMedian 进行 50000 次调用。
+
+链接：https://leetcode-cn.com/problems/shu-ju-liu-zhong-de-zhong-wei-shu-lcof/
+
+
+解法一：添加元素时排序（时间复杂度高）
+
+```Java
+class MedianFinder {
+    List<Integer> list;
+    int size;
+    /** initialize your data structure here. */
+    public MedianFinder() {
+        this.list = new ArrayList<>();
+        this.size = 0;
+    }
+    
+    public void addNum(int num) {
+        list.add(num);
+        size++;
+        Collections.sort(list);
+    }
+    
+    public double findMedian() {
+        if (size%2==0){
+            Double d1 = new Double(list.get(size/2));
+            Double d2 = new Double(list.get(size/2-1));
+            return (d1+d2)/2;
+        }else{
+            return new Double(list.get(size/2));
+        }
+    }
+}
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder obj = new MedianFinder();
+ * obj.addNum(num);
+ * double param_2 = obj.findMedian();
+ */
+```
+
+
+解法二：  
+使用小顶堆、大顶堆各保留一半元素，中位数可根据两个堆的堆顶元素计算得到
+
+```Java
+class MedianFinder {
+    Queue<Integer> A, B;
+    public MedianFinder() {
+        A = new PriorityQueue<>(); // 小顶堆，保存较大的一半
+        B = new PriorityQueue<>((x, y) -> (y - x)); // 大顶堆，保存较小的一半
+    }
+    public void addNum(int num) {
+        if(A.size() != B.size()) {
+            // 向小顶堆添加元素
+            A.add(num);
+            // 把小顶堆堆顶元素添加到大顶堆中
+            B.add(A.poll());
+        } else {
+            B.add(num);
+            A.add(B.poll());
+        }
+    }
+    public double findMedian() {
+        return A.size() != B.size() ? A.peek() : (A.peek() + B.peek()) / 2.0;
+    }
+}
+
+作者：jyd
+链接：https://leetcode-cn.com/problems/shu-ju-liu-zhong-de-zhong-wei-shu-lcof/solution/mian-shi-ti-41-shu-ju-liu-zhong-de-zhong-wei-shu-y/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 ```
