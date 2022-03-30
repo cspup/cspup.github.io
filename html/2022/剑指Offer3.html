@@ -35,6 +35,8 @@
 <li><a href="#剑指-offer-61-扑克牌中的顺子">剑指 Offer 61. 扑克牌中的顺子</a></li>
 <li><a href="#剑指-offer-40-最小的k个数">剑指 Offer 40. 最小的k个数</a></li>
 <li><a href="#剑指-offer-41-数据流中的中位数">剑指 Offer 41. 数据流中的中位数</a></li>
+<li><a href="#剑指-offer-55---i-二叉树的深度">剑指 Offer 55 - I. 二叉树的深度</a></li>
+<li><a href="#剑指-offer-55---ii-平衡二叉树">剑指 Offer 55 - II. 平衡二叉树</a></li>
 </ul>
 <h2 id="剑指-offer-34-二叉树中和为某一值的路径">剑指 Offer 34. 二叉树中和为某一值的路径</h2>
 <p>给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。</p>
@@ -572,6 +574,107 @@ double findMedian() - 返回目前所有元素的中位数。
 链接：https://leetcode-cn.com/problems/shu-ju-liu-zhong-de-zhong-wei-shu-lcof/solution/mian-shi-ti-41-shu-ju-liu-zhong-de-zhong-wei-shu-y/
 来源：力扣（LeetCode）
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+</code></pre>
+<h2 id="剑指-offer-55---i-二叉树的深度">剑指 Offer 55 - I. 二叉树的深度</h2>
+<p>输入一棵二叉树的根节点，求该树的深度。从根节点到叶节点依次经过的节点（含根、叶节点）形成树的一条路径，最长路径的长度为树的深度。</p>
+<p>例如：</p>
+<p>给定二叉树 [3,9,20,null,null,15,7]，</p>
+<pre><code>    3
+   / \
+  9  20
+    /  \
+   15   7
+</code></pre>
+<p>返回它的最大深度 3 。</p>
+<p>提示：</p>
+<p>节点总数 &lt;= 10000</p>
+<p>链接：https://leetcode-cn.com/problems/er-cha-shu-de-shen-du-lcof/</p>
+<p>解法一：dfs</p>
+<pre><code class="language-Java">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int maxDepth(TreeNode root) {
+        return dfs(root,0);
+    }
+
+    int dfs(TreeNode root,int dep){
+        if (root==null){
+            return dep;
+        }
+
+        int d1 = dfs(root.left,dep+1);
+        int d2 = dfs(root.right,dep+1);
+        return d1&gt;d2?d1:d2;
+    }
+}
+</code></pre>
+<h2 id="剑指-offer-55---ii-平衡二叉树">剑指 Offer 55 - II. 平衡二叉树</h2>
+<p>输入一棵二叉树的根节点，判断该树是不是平衡二叉树。如果某二叉树中任意节点的左右子树的深度相差不超过1，那么它就是一棵平衡二叉树。</p>
+<p>示例 1:</p>
+<p>给定二叉树 [3,9,20,null,null,15,7]</p>
+<pre><code>    3
+   / \
+  9  20
+    /  \
+   15   7
+</code></pre>
+<p>返回 true 。</p>
+<p>示例 2:</p>
+<p>给定二叉树 [1,2,2,3,3,null,null,4,4]</p>
+<pre><code>       1
+      / \
+     2   2
+    / \
+   3   3
+  / \
+ 4   4
+</code></pre>
+<p>返回 false 。</p>
+<p>限制：</p>
+<p>0 &lt;= 树的结点个数 &lt;= 10000</p>
+<p>链接：https://leetcode-cn.com/problems/ping-heng-er-cha-shu-lcof/</p>
+<p>解法一：在上一题(<a href="#剑指-offer-55---i-二叉树的深度">剑指 Offer 55 - I. 二叉树的深度</a>)基础上修改后的dfs</p>
+<pre><code class="language-Java">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return dfs(root,0)&gt;=0;
+    }
+
+    int dfs(TreeNode root,int k){
+        if (root==null){
+            return k;
+        }
+
+        int d1 = dfs(root.left,k+1);
+        int d2 = dfs(root.right,k+1);
+        // 左右子树中有不平衡的，返回-1
+        if (d1&lt;0||d2&lt;0){
+            return -1;
+        }
+        // 左右子树深度差大于1，返回-1
+        if (Math.abs(d1-d2)&gt;1){
+            return -1;
+        }
+        // 正常返回深度
+        return d1&gt;d2?d1:d2;
+    }
+}
+
 </code></pre>
 
 </div>
