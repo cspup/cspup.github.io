@@ -37,6 +37,9 @@
 <li><a href="#剑指-offer-41-数据流中的中位数">剑指 Offer 41. 数据流中的中位数</a></li>
 <li><a href="#剑指-offer-55---i-二叉树的深度">剑指 Offer 55 - I. 二叉树的深度</a></li>
 <li><a href="#剑指-offer-55---ii-平衡二叉树">剑指 Offer 55 - II. 平衡二叉树</a></li>
+<li><a href="#剑指-offer-64-求12n">剑指 Offer 64. 求1+2+…+n</a></li>
+<li><a href="#剑指-offer-68---i-二叉搜索树的最近公共祖先">剑指 Offer 68 - I. 二叉搜索树的最近公共祖先</a></li>
+<li><a href="#剑指-offer-68---ii-二叉树的最近公共祖先">剑指 Offer 68 - II. 二叉树的最近公共祖先</a></li>
 </ul>
 <h2 id="剑指-offer-34-二叉树中和为某一值的路径">剑指 Offer 34. 二叉树中和为某一值的路径</h2>
 <p>给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。</p>
@@ -675,6 +678,117 @@ class Solution {
     }
 }
 
+</code></pre>
+<h2 id="剑指-offer-64-求12n">剑指 Offer 64. 求1+2+…+n</h2>
+<p>求 1+2+...+n ，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。</p>
+<p>示例 1：</p>
+<p>输入: n = 3
+输出: 6
+示例 2：</p>
+<p>输入: n = 9
+输出: 45</p>
+<p>限制：</p>
+<p>1 &lt;= n &lt;= 10000</p>
+<p>链接：https://leetcode-cn.com/problems/qiu-12n-lcof/</p>
+<p>解法一：</p>
+<pre><code class="language-Java">class Solution {
+    public int sumNums(int n) {
+        boolean flag = n &gt; 0 &amp;&amp; (n += sumNums(n - 1)) &gt; 0;
+        return n;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/qiu-12n-lcof/solution/qiu-12n-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+</code></pre>
+<h2 id="剑指-offer-68---i-二叉搜索树的最近公共祖先">剑指 Offer 68 - I. 二叉搜索树的最近公共祖先</h2>
+<p>给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。</p>
+<p>百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”</p>
+<p>例如，给定如下二叉搜索树:  root = [6,2,8,0,4,7,9,null,null,3,5]</p>
+<p><img src="https://img.cspup.com/img/Ng7rebY.png" alt="Ng7rebY.png" /></p>
+<p>示例 1:</p>
+<pre><code>输入: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8
+输出: 6 
+</code></pre>
+<p>解释: 节点 2 和节点 8 的最近公共祖先是 6。</p>
+<p>示例 2:</p>
+<pre><code>输入: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4
+输出: 2
+</code></pre>
+<p>解释: 节点 2 和节点 4 的最近公共祖先是 2, 因为根据定义最近公共祖先节点可以为节点本身。</p>
+<p>说明:</p>
+<p>所有节点的值都是唯一的。
+p、q 为不同节点且均存在于给定的二叉搜索树中。</p>
+<p>链接：https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-zui-jin-gong-gong-zu-xian-lcof/</p>
+<p>解法一：利用二叉搜索树的性质</p>
+<pre><code class="language-Java">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        while (root!=null){
+            if (root.val&lt;p.val&amp;&amp;root.val&lt;q.val){
+                root =root.right;
+            }else if (root.val&gt;p.val&amp;&amp;root.val&gt;q.val){
+                root = root.left;
+            }else{
+                break;
+            }
+        }
+        return root;
+    }
+
+}
+</code></pre>
+<h2 id="剑指-offer-68---ii-二叉树的最近公共祖先">剑指 Offer 68 - II. 二叉树的最近公共祖先</h2>
+<p>给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。</p>
+<p>百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”</p>
+<p>例如，给定如下二叉树:  root = [3,5,1,6,2,0,8,null,null,7,4]</p>
+<p><img src="https://img.cspup.com/img/No5tuGe.png" alt="No5tuGe.png" /></p>
+<p>示例 1:</p>
+<pre><code>输入: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+输出: 3
+</code></pre>
+<p>解释: 节点 5 和节点 1 的最近公共祖先是节点 3。</p>
+<p>示例 2:</p>
+<pre><code>输入: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+输出: 5
+</code></pre>
+<p>解释: 节点 5 和节点 4 的最近公共祖先是节点 5。因为根据定义最近公共祖先节点可以为节点本身。</p>
+<p>说明:</p>
+<p>所有节点的值都是唯一的。
+p、q 为不同节点且均存在于给定的二叉树中。</p>
+<p>链接：https://leetcode-cn.com/problems/er-cha-shu-de-zui-jin-gong-gong-zu-xian-lcof/</p>
+<p>解法一：</p>
+<pre><code class="language-Java">/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root==null||root == p||root==q){
+            return root;
+        }
+
+        TreeNode l = lowestCommonAncestor(root.left, p, q);
+        TreeNode r = lowestCommonAncestor(root.right, p, q);
+        return l == null ? r : (r == null ? l : root);
+    }
+}
 </code></pre>
 
 </div>
