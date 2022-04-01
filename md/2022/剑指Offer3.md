@@ -10,6 +10,8 @@
 - [剑指 Offer 64. 求1+2+…+n](#剑指-offer-64-求12n)
 - [剑指 Offer 68 - I. 二叉搜索树的最近公共祖先](#剑指-offer-68---i-二叉搜索树的最近公共祖先)
 - [剑指 Offer 68 - II. 二叉树的最近公共祖先](#剑指-offer-68---ii-二叉树的最近公共祖先)
+- [剑指 Offer 16. 数值的整数次方](#剑指-offer-16-数值的整数次方)
+- [剑指 Offer 33. 二叉搜索树的后序遍历序列](#剑指-offer-33-二叉搜索树的后序遍历序列)
 
 ## 剑指 Offer 34. 二叉树中和为某一值的路径
 给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
@@ -983,4 +985,131 @@ class Solution {
         return l == null ? r : (r == null ? l : root);
     }
 }
+```
+
+
+## 剑指 Offer 16. 数值的整数次方
+实现 pow(x, n) ，即计算 x 的 n 次幂函数（即，xn）。不得使用库函数，同时不需要考虑大数问题。
+
+ 
+
+示例 1：
+```
+输入：x = 2.00000, n = 10
+输出：1024.00000
+```
+示例 2：
+```
+输入：x = 2.10000, n = 3
+输出：9.26100
+```
+示例 3：
+```
+输入：x = 2.00000, n = -2
+输出：0.25000
+```
+解释：2-2 = 1/22 = 1/4 = 0.25
+ 
+
+提示：
+
+-100.0 < x < 100.0
+-231 <= n <= 231-1
+-104 <= xn <= 104
+
+链接：https://leetcode-cn.com/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/
+
+
+解法一：快速幂
+
+例如：x^11 = x^(2^3) * x^(2^1) * x^(2^0)
+
+参考链接：[百度百科快速幂](https://baike.baidu.com/item/%E5%BF%AB%E9%80%9F%E5%B9%82/5500243?fr=aladdin)
+
+```Java
+class Solution {
+    public double myPow(double x, int n) {
+        if (x==0){
+            return 0;
+        }
+        long b = n;
+        double res = 1.0;
+        if (b<0){
+            x = 1/x;
+            b = -b;
+        }
+
+        while (b>0){
+            if ((b&1)==1){
+                res *= x;
+            }
+            x *= x;
+            b >>= 1;
+        }
+        return res;
+    }
+}
+
+```
+
+
+## 剑指 Offer 33. 二叉搜索树的后序遍历序列
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回 true，否则返回 false。假设输入的数组的任意两个数字都互不相同。
+
+ 
+
+参考以下这颗二叉搜索树：
+```
+     5
+    / \
+   2   6
+  / \
+ 1   3
+```
+示例 1：
+```
+输入: [1,6,3,2,5]
+输出: false
+```
+示例 2：
+```
+输入: [1,3,2,6,5]
+输出: true
+```
+
+提示：
+
+数组长度 <= 1000
+
+链接：https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/
+
+解法一：
+
+递归判断左右子树
+```Java
+class Solution {
+    public boolean verifyPostorder(int[] postorder) {
+        return recur(postorder,0,postorder.length-1);
+    }
+
+    boolean recur(int[] postorder,int p,int q){
+        if (p>=q){
+            return true;
+        }
+        // 划分左右子树
+        int m = p;
+        while (postorder[m]<postorder[q]){
+            m++;
+        }
+
+        int n = m;
+        // 考查右子树是否都比根节点大
+        while(postorder[m] > postorder[q]) {
+            m++;
+        }
+
+        return m==q&&recur(postorder,p,n-1)&&recur(postorder,n,q-1);
+    }
+}
+
 ```
