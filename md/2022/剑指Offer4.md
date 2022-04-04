@@ -2,6 +2,8 @@
 - [剑指 Offer 65. 不用加减乘除做加法](#剑指-offer-65-不用加减乘除做加法)
 - [剑指 Offer 56 - I. 数组中数字出现的次数](#剑指-offer-56---i-数组中数字出现的次数)
 - [剑指 Offer 56 - II. 数组中数字出现的次数 II](#剑指-offer-56---ii-数组中数字出现的次数-ii)
+- [剑指 Offer 39. 数组中出现次数超过一半的数字](#剑指-offer-39-数组中出现次数超过一半的数字)
+- [剑指 Offer 66. 构建乘积数组](#剑指-offer-66-构建乘积数组)
 
 ## 剑指 Offer 15. 二进制中1的个数
 编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为 汉明重量).）。
@@ -207,3 +209,98 @@ class Solution {
 解法二：位运算
 
 
+## 剑指 Offer 39. 数组中出现次数超过一半的数字
+数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。
+
+ 
+
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+
+ 
+
+示例 1:
+```
+输入: [1, 2, 3, 2, 2, 2, 5, 4, 2]
+输出: 2
+```
+
+限制：
+
+1 <= 数组长度 <= 50000
+
+链接：https://leetcode-cn.com/problems/shu-zu-zhong-chu-xian-ci-shu-chao-guo-yi-ban-de-shu-zi-lcof/
+
+解法一：排序取中
+
+```Java
+class Solution {
+    public int majorityElement(int[] nums) {
+        Arrays.sort(nums);
+        return nums[nums.length/2];
+    }
+}
+```
+
+解法二：摩尔投票法
+
+```Java
+class Solution {
+    public int majorityElement(int[] nums) {
+        int x = 0, votes = 0;
+        for(int num : nums){
+            if(votes == 0) x = num;
+            votes += num == x ? 1 : -1;
+        }
+        return x;
+    }
+}
+
+作者：jyd
+链接：https://leetcode-cn.com/problems/shu-zu-zhong-chu-xian-ci-shu-chao-guo-yi-ban-de-shu-zi-lcof/solution/mian-shi-ti-39-shu-zu-zhong-chu-xian-ci-shu-chao-3/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+## 剑指 Offer 66. 构建乘积数组
+给定一个数组 A[0,1,…,n-1]，请构建一个数组 B[0,1,…,n-1]，其中 B[i] 的值是数组 A 中除了下标 i 以外的元素的积, 即 B[i]=A[0]×A[1]×…×A[i-1]×A[i+1]×…×A[n-1]。不能使用除法。
+
+ 
+
+示例:
+```
+输入: [1,2,3,4,5]
+输出: [120,60,40,30,24]
+ ```
+
+提示：
+
+所有元素乘积之和不会溢出 32 位整数
+a.length <= 100000
+
+链接：https://leetcode-cn.com/problems/gou-jian-cheng-ji-shu-zu-lcof/
+
+解法一：错位从左乘到右再从右乘到左  
+```Java
+class Solution {
+    public int[] constructArr(int[] a) {
+        int[] res = new int[a.length];
+        if (a.length==0){
+            return a;
+        }
+        res[0]=1;
+        // 从左乘到右
+        // 得到[1,a,ab,abc,abcd]
+        for (int i=1;i<a.length;i++){
+            res[i] = res[i-1]*a[i-1];
+        }
+        int tmp = 1;
+        // 从右乘到左
+        // 得到[bcde,acde,abde,abce,abcd]
+        for(int i = a.length - 2; i >= 0; i--) {
+            tmp *= a[i + 1];
+            res[i] *= tmp;
+        }
+        return res;
+    }
+}
+```
