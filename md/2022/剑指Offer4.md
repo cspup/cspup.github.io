@@ -4,6 +4,8 @@
 - [剑指 Offer 56 - II. 数组中数字出现的次数 II](#剑指-offer-56---ii-数组中数字出现的次数-ii)
 - [剑指 Offer 39. 数组中出现次数超过一半的数字](#剑指-offer-39-数组中出现次数超过一半的数字)
 - [剑指 Offer 66. 构建乘积数组](#剑指-offer-66-构建乘积数组)
+- [剑指 Offer 14- I. 剪绳子](#剑指-offer-14--i-剪绳子)
+- [剑指 Offer 57 - II. 和为s的连续正数序列](#剑指-offer-57---ii-和为s的连续正数序列)
 
 ## 剑指 Offer 15. 二进制中1的个数
 编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为 汉明重量).）。
@@ -301,6 +303,147 @@ class Solution {
             res[i] *= tmp;
         }
         return res;
+    }
+}
+```
+
+
+## 剑指 Offer 14- I. 剪绳子
+给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 k[0],k[1]...k[m-1] 。请问 k[0]*k[1]*...*k[m-1] 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+
+示例 1：
+```
+输入: 2
+输出: 1
+```
+解释: 2 = 1 + 1, 1 × 1 = 1  
+示例 2:
+```
+输入: 10
+输出: 36
+```
+解释: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36  
+
+提示：
+
+2 <= n <= 58
+
+链接：https://leetcode-cn.com/problems/jian-sheng-zi-lcof/
+
+
+解法一：动态规划
+
+```Java
+class Solution {
+    public int cuttingRope(int n) {
+        int[] dp = new int[n+1];
+        dp[2] = 1;
+        for (int i=3;i<n+1;i++){
+            for (int j=2;j<i;j++){
+                dp[i] = Math.max(dp[i],Math.max(j * (i - j), j * dp[i - j]));
+            }
+        }
+        return dp[n];
+    }
+}
+```
+
+
+## 剑指 Offer 57 - II. 和为s的连续正数序列
+输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。
+
+序列内的数字由小到大排列，不同序列按照首个数字从小到大排列。
+
+示例 1：
+```
+输入：target = 9
+输出：[[2,3,4],[4,5]]
+```
+示例 2：
+```
+输入：target = 15
+输出：[[1,2,3,4,5],[4,5,6],[7,8]]
+```
+
+限制：
+
+1 <= target <= 10^5
+
+链接：https://leetcode-cn.com/problems/he-wei-sde-lian-xu-zheng-shu-xu-lie-lcof/
+
+解法一：滑动窗口
+
+```Java
+class Solution {
+    public int[][] findContinuousSequence(int target) {
+        List<int[]> res = new ArrayList<>();
+        int i=1,j=2,s=3;
+        while (i<j){
+            if (s==target){
+                int[] ans = new int[j-i+1];
+                for (int k=i;k<=j;k++){
+                    ans[k-i] = k;
+                }
+                res.add(ans);
+            }
+            if (s>target){
+                // 左收缩
+                s = s-i;
+                i++;
+            }else{
+                // 右扩张
+                j++;
+                s = s+j;
+            }
+        }
+
+        return res.toArray(new int[0][]);
+    }
+}
+
+```
+
+##剑指 Offer 62. 圆圈中最后剩下的数字
+0,1,···,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字（删除后从下一个数字开始计数）。求出这个圆圈里剩下的最后一个数字。
+
+例如，0、1、2、3、4这5个数字组成一个圆圈，从数字0开始每次删除第3个数字，则删除的前4个数字依次是2、0、4、1，因此最后剩下的数字是3。
+
+ 
+
+示例 1：
+```
+输入: n = 5, m = 3
+输出: 3
+```
+示例 2：
+```
+输入: n = 10, m = 17
+输出: 2
+```
+
+限制：
+
+1 <= n <= 10^5
+1 <= m <= 10^6
+
+
+链接：https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/
+
+解法一：  
+
+长度为 n 的序列会先删除第 m % n 个元素，然后剩下一个长度为 n - 1 的序列。只要知道长度为n-1的数列留下的是哪些元素就可以知道长度为n的数列留下哪个元素  
+
+x = f(n-1,m)  
+f(n,m) = (m%n+x)%n = (m+x)%n = (m + f(n-1,m)) % n
+```Java
+class Solution {
+    public int lastRemaining(int n, int m) {
+        int f = 0;
+        // 最后剩2个元素，从2开始反推
+        for (int i = 2; i <= n ; i++) {
+            f = (m + f) % i;
+        }
+        return f;
     }
 }
 ```
