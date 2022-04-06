@@ -6,6 +6,8 @@
 - [剑指 Offer 66. 构建乘积数组](#剑指-offer-66-构建乘积数组)
 - [剑指 Offer 14- I. 剪绳子](#剑指-offer-14--i-剪绳子)
 - [剑指 Offer 57 - II. 和为s的连续正数序列](#剑指-offer-57---ii-和为s的连续正数序列)
+- [剑指 Offer 29. 顺时针打印矩阵](#剑指-offer-29-顺时针打印矩阵)
+- [剑指 Offer 31. 栈的压入、弹出序列](#剑指-offer-31-栈的压入弹出序列)
 
 ## 剑指 Offer 15. 二进制中1的个数
 编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为 汉明重量).）。
@@ -444,6 +446,124 @@ class Solution {
             f = (m + f) % i;
         }
         return f;
+    }
+}
+```
+
+
+
+## 剑指 Offer 29. 顺时针打印矩阵
+输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
+
+示例 1：
+```
+输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+输出：[1,2,3,6,9,8,7,4,5]
+```
+示例 2：
+```
+输入：matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+输出：[1,2,3,4,8,12,11,10,9,5,6,7]
+```
+
+限制：
+
+0 <= matrix.length <= 100
+0 <= matrix[i].length <= 100
+
+链接：https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/
+
+解法一：模拟从左到右，从上到下，从右到左，从下到上复制元素
+
+```Java
+class Solution {
+    public int[] spiralOrder(int[][] matrix) {
+        if (matrix.length==0){
+            return new int[0];
+        }
+        int[] res = new int[matrix.length*matrix[0].length];
+        int left = 0, right = matrix[0].length-1;
+        int top = 0, bottom = matrix.length-1;
+        int k = 0;
+
+        while (true){
+            for (int i=left;i<=right;i++){
+                res[k++] = matrix[top][i];
+            }
+            if (++top > bottom){
+                break;
+            }
+
+            for (int i=top;i<=bottom;i++){
+                res[k++] = matrix[i][right];
+            }
+            if (left > --right){
+                break;
+            }
+            for(int i = right; i >= left; i--){
+                res[k++] = matrix[bottom][i];
+            }
+            if(top > --bottom){
+                break;
+            }
+            for(int i = bottom; i >= top; i--){
+                res[k++] = matrix[i][left];
+            }
+            if(++left > right){
+                break;
+            }
+
+        }
+        return res;
+    }
+}
+```
+
+
+## 剑指 Offer 31. 栈的压入、弹出序列
+输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如，序列 {1,2,3,4,5} 是某栈的压栈序列，序列 {4,5,3,2,1} 是该压栈序列对应的一个弹出序列，但 {4,3,5,1,2} 就不可能是该压栈序列的弹出序列。
+
+
+示例 1：
+```
+输入：pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
+输出：true
+```
+解释：我们可以按以下顺序执行：
+push(1), push(2), push(3), push(4), pop() -> 4,
+push(5), pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
+示例 2：
+```
+输入：pushed = [1,2,3,4,5], popped = [4,3,5,1,2]
+输出：false
+```
+解释：1 不能在 2 之前弹出。
+ 
+
+提示：
+
+0 <= pushed.length == popped.length <= 1000
+0 <= pushed[i], popped[i] < 1000
+pushed 是 popped 的排列。
+
+
+链接：https://leetcode-cn.com/problems/zhan-de-ya-ru-dan-chu-xu-lie-lcof/
+
+解法一：模拟
+
+```Java
+class Solution {
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Stack<Integer> stack = new Stack<>();
+        int k=0;
+        for (int j : pushed) {
+            stack.push(j);
+            while (!stack.isEmpty() && stack.peek() == popped[k]) {
+                stack.pop();
+                k++;
+            }
+        }
+        return k>=popped.length;
     }
 }
 ```
