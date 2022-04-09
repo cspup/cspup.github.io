@@ -323,3 +323,27 @@ class Solution {
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 ```
+
+解法二：使用Set
+
+```Java
+class Solution {
+    public String[] permutation(String s) {
+        Set<String> lastSet = new HashSet<>();
+        lastSet.add("");
+        // 从1个字母到2个字母到n个字母逐步构建
+        for (int i = 0; i < s.length(); ++i) {
+            Set<String> curSet = new HashSet<>();
+            for (String str: lastSet) {
+                int n = str.length();
+                // 移动第i个字母的位置得到不同序列
+                for (int j = 0; j <= n; ++j)
+                    curSet.add(str.substring(0, j) + s.charAt(i) + str.substring(j, n));
+            }
+            lastSet = curSet;
+        }
+        return lastSet.toArray(new String[0]);
+    }
+}
+
+```
