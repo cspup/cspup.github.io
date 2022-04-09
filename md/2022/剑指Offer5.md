@@ -1,5 +1,7 @@
 - [剑指 Offer 59 - I. 滑动窗口的最大值](#剑指-offer-59---i-滑动窗口的最大值)
 - [剑指 Offer 59 - II. 队列的最大值](#剑指-offer-59---ii-队列的最大值)
+- [剑指 Offer 37. 序列化二叉树](#剑指-offer-37-序列化二叉树)
+- [剑指 Offer 38. 字符串的排列](#剑指-offer-38-字符串的排列)
 
 ## 剑指 Offer 59 - I. 滑动窗口的最大值  
 
@@ -168,4 +170,156 @@ class MaxQueue {
  * obj.push_back(value);
  * int param_3 = obj.pop_front();
  */
+```
+
+
+## 剑指 Offer 37. 序列化二叉树
+请实现两个函数，分别用来序列化和反序列化二叉树。
+
+你需要设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。
+
+提示：输入输出格式与 LeetCode 目前使用的方式一致，详情请参阅 LeetCode 序列化二叉树的格式。你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。
+
+ 
+
+示例：
+
+![2BBi1fPs.jpg](https://img.cspup.com/img/2BBi1fPs.jpg)  
+
+```
+输入：root = [1,2,3,null,null,4,5]
+输出：[1,2,3,null,null,4,5]
+```
+
+
+链接：https://leetcode-cn.com/problems/xu-lie-hua-er-cha-shu-lcof/
+
+
+解法一：层序遍历
+
+```Java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if (root==null){
+            return "[]";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            TreeNode node = queue.poll();
+            if (node!=null){
+                queue.offer(node.left);
+                queue.offer(node.right);
+                sb.append(node.val+",");
+            }else{
+                sb.append("null,");
+            }
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append("]");
+        return sb.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data.equals("[]")) return null;
+        data = data.substring(1,data.length()-1);
+        String[] strs = data.split(",");
+        System.out.print(data);
+        TreeNode root = new TreeNode(Integer.parseInt(strs[0]));
+        Queue<TreeNode> queue = new LinkedList<>() {{ add(root); }};
+        int i = 1;
+        while(!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            if(!strs[i].equals("null")) {
+                node.left = new TreeNode(Integer.parseInt(strs[i]));
+                queue.add(node.left);
+            }
+            i++;
+            if(!strs[i].equals("null")) {
+                node.right = new TreeNode(Integer.parseInt(strs[i]));
+                queue.add(node.right);
+            }
+            i++;
+        }
+        return root;
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.deserialize(codec.serialize(root));
+
+```
+
+
+## 剑指 Offer 38. 字符串的排列
+输入一个字符串，打印出该字符串中字符的所有排列。  
+
+
+你可以以任意顺序返回这个字符串数组，但里面不能有重复元素。  
+
+示例:
+```
+输入：s = "abc"
+输出：["abc","acb","bac","bca","cab","cba"]
+```
+
+限制：
+
+1 <= s 的长度 <= 8
+
+链接：https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof/
+
+
+解法一：回溯
+
+```Java
+class Solution {
+    List<String> res = new LinkedList<>();
+    char[] c;
+    public String[] permutation(String s) {
+        c = s.toCharArray();
+        dfs(0);
+        return res.toArray(new String[res.size()]);
+    }
+    void dfs(int x) {
+        if(x == c.length - 1) {
+            res.add(String.valueOf(c));      // 添加排列方案
+            return;
+        }
+        HashSet<Character> set = new HashSet<>();
+        for(int i = x; i < c.length; i++) {
+            if(set.contains(c[i])) continue; // 重复，因此剪枝
+            set.add(c[i]);
+            swap(i, x);                      // 交换，将 c[i] 固定在第 x 位
+            dfs(x + 1);                      // 开启固定第 x + 1 位字符
+            swap(i, x);                      // 恢复交换
+        }
+    }
+    void swap(int a, int b) {
+        char tmp = c[a];
+        c[a] = c[b];
+        c[b] = tmp;
+    }
+}
+
+作者：jyd
+链接：https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof/solution/mian-shi-ti-38-zi-fu-chuan-de-pai-lie-hui-su-fa-by/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
 ```
