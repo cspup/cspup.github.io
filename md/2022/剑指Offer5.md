@@ -3,6 +3,8 @@
 - [剑指 Offer 37. 序列化二叉树](#剑指-offer-37-序列化二叉树)
 - [剑指 Offer 38. 字符串的排列](#剑指-offer-38-字符串的排列)
 - [剑指 Offer 49. 丑数](#剑指-offer-49-丑数)
+- [剑指 Offer 17. 打印从1到最大的n位数](#剑指-offer-17-打印从1到最大的n位数)
+- [剑指 Offer 51. 数组中的逆序对](#剑指-offer-51-数组中的逆序对)
 
 ## 剑指 Offer 59 - I. 滑动窗口的最大值  
 
@@ -388,3 +390,158 @@ class Solution {
 ```
 
 
+## 剑指 Offer 17. 打印从1到最大的n位数
+输入数字 n，按顺序打印出从 1 到最大的 n 位十进制数。比如输入 3，则打印出 1、2、3 一直到最大的 3 位数 999。
+
+示例 1:
+```
+输入: n = 1
+输出: [1,2,3,4,5,6,7,8,9]
+``` 
+
+说明：
+
+1. 用返回一个整数列表来代替打印
+2. n 为正整数
+
+链接：https://leetcode-cn.com/problems/da-yin-cong-1dao-zui-da-de-nwei-shu-lcof/
+
+
+~~解法一：~~
+```Java
+
+class Solution {
+    public int[] printNumbers(int n) {
+        int len = 0;
+        for (int i=0;i<n;i++){
+            len += 9*Math.pow(10,i);
+        }
+        int[] res = new int[len];
+        for (int i=0;i<len;i++){
+            res[i] = i+1;
+        }
+        return res;
+    }
+}
+```
+
+解法二：  
+
+实际上这题是要考查大数，因此应该使用字符串输出防止溢出
+
+```Java
+class Solution {
+    StringBuilder res;
+    int nine = 0, count = 0, start, n;
+    char[] num, loop = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    public String printNumbers(int n) {
+        this.n = n;
+        res = new StringBuilder();
+        num = new char[n];
+        start = n - 1;
+        dfs(0);
+        res.deleteCharAt(res.length() - 1);
+        return res.toString();
+    }
+    void dfs(int x) {
+        if(x == n) {
+            String s = String.valueOf(num).substring(start);
+            if(!s.equals("0")) res.append(s + ",");
+            if(n - start == nine) start--;
+            return;
+        }
+        for(char i : loop) {
+            if(i == '9') nine++;
+            num[x] = i;
+            dfs(x + 1);
+        }
+        nine--;
+    }
+}
+
+作者：jyd
+链接：https://leetcode-cn.com/problems/da-yin-cong-1dao-zui-da-de-nwei-shu-lcof/solution/mian-shi-ti-17-da-yin-cong-1-dao-zui-da-de-n-wei-2/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+
+## 剑指 Offer 51. 数组中的逆序对
+在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。 
+
+示例 1:
+```
+输入: [7,5,6,4]
+输出: 5
+```
+
+限制：
+
+0 <= 数组长度 <= 50000
+
+链接：https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
+
+
+解法一：利用归并排序
+
+
+```Java
+class Solution {
+    int res = 0;
+    public int reversePairs(int[] nums) {
+        mergeSort(nums);
+        return res;
+    }
+   void mergeSort(int[] nums){
+        sort(nums,0,nums.length-1);
+    }
+    // 分别对左右排序
+    void sort(int[] nums,int low,int high){
+        if (low>=high){
+            return;
+        }
+        int mid = low + ( high - low ) / 2;
+        // 对左边排序
+        sort(nums,low,mid);
+        // 对右边排序
+        sort(nums,mid+1,high);
+        // 合并有序数组
+        merge(nums,low,mid,high);
+
+    }
+    // 合并
+    void merge(int[] nums,int low,int mid,int high){
+        // 暂时保存数组
+        int[] temp = new int[high-low+1];
+        int i = 0;
+        int l = low;
+        int m = mid+1;
+        // 从有序数组中挑选最小的放入temp中
+        while (l<=mid&&m<=high){
+            if(nums[l] <= nums[m]){
+                temp[i++] = nums[l++];
+            }else{
+                // 统计逆序数
+                //当左边数组的大与右边数组的元素时，统计当前元素以及后面的元素的个数
+                //此时这个数就是逆序数
+                // 例如：7，5，6，4  划分左右排序为5，7和4，6；5大于4逆序数为3，7大于6，逆序数为2
+                res += (mid - l + 1);
+                temp[i++] = nums[m++];
+            }
+
+        }
+        // 处理未被放入的元素
+        while (l<=mid){
+            temp[i++] = nums[l++];
+        }
+        while (m<=high){
+            temp[i++] = nums[m++];
+        }
+        // 将排序后的序列放回原序列
+        System.arraycopy(temp,0,nums,low,temp.length);
+    }
+}
+
+官方题解：https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/solution/shu-zu-zhong-de-ni-xu-dui-by-leetcode-solution/
+
+```
