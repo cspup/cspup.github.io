@@ -290,6 +290,17 @@
             <button id="clearRecords" class="btn-danger">清空记录</button>
         </div>
         
+        <div class="controls" style="margin-top: 10px;">
+            <label for="scanInterval" style="margin-right: 10px; align-self: center;">重复扫描间隔:</label>
+            <select id="scanInterval" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                <option value="1000">1秒</option>
+                <option value="3000" selected>3秒</option>
+                <option value="5000">5秒</option>
+                <option value="10000">10秒</option>
+                <option value="0">无限制</option>
+            </select>
+        </div>
+        
         <div id="scanner-container">
             <div class="scanner-overlay">
                 <div class="scanner-line"></div>
@@ -315,8 +326,10 @@
             constructor() {
                 this.records = JSON.parse(localStorage.getItem('barcodeRecords') || '[]');
                 this.isScanning = false;
-                this.isContinuous =
                 this.isContinuous = false;
+                this.tempDetections = {}; // 临时存储检测结果以进行验证
+                this.lastScanTime = {}; // 存储每个条形码最后扫描时间
+                this.scanInterval = 3000; // 3秒内不允许重复扫描同一码
                 this.init();
             }
 
@@ -332,6 +345,11 @@
                 document.getElementById('stopScan').addEventListener('click', () => this.stopScan());
                 document.getElementById('exportExcel').addEventListener('click', () => this.exportExcel());
                 document.getElementById('clearRecords').addEventListener('click', () => this.clearRecords());
+                
+                // 绑定扫描间隔选择事件
+                document.getElementById('scanInterval').addEventListener('change', (e) => {
+                    this.scanInterval = parseInt(e.target.value);
+                });
             }
 
             startScan(continuous = false) {
@@ -355,9 +373,25 @@
                             facingMode: "environment"
                         }
                     },
+                    locator: {
+                        patchSize: "medium",
+                        halfSample: true
+                    },
+                    numOfWorkers: 2,
+                    frequency: 10,
                     decoder: {
-                        readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "code_39_vin_reader", "codabar_reader", "upc_reader", "upc_e_reader"]
-                    }
+                        readers: [
+                            "code_128_reader",
+                            "ean_reader", 
+                            "ean_8_reader", 
+                            "code_39_reader", 
+                            "code_39_vin_reader", 
+                            "codabar_reader", 
+                            "upc_reader", 
+                            "upc_e_reader"
+                        ]
+                    },
+                    locate: true
                 }, (err) => {
                     if (err) {
                         alert("摄像头初始化失败: " + err);
@@ -368,11 +402,43 @@
                 });
 
                 Quagga.onDetected((data) => {
+                    // 获取置信度最高的结果
                     const code = data.codeResult.code;
-                    if (code) {
+                    const confidence = data.codeResult.confidence;
+                    
+                    // 稍微降低置信度阈值以适应更多类型的条形码
+                    if (code && confidence > 0.3) {
+                        console.log('检测到条形码:', code, '置信度:', confidence);
                         this.addRecord(code);
+                        
+                        // 在单次扫描模式下检测到条码后立即停止
                         if (!this.isContinuous) {
                             this.stopScan();
+                        }
+                    } else if (code) {
+                        console.log('低置信度检测结果(未采用):', code, '置信度:', confidence);
+                    }
+                });
+                
+                // 添加绘制功能以增强可视化反馈
+                Quagga.onProcessed((data) => {
+                    const drawingCtx = Quagga.canvas.ctx.overlay;
+                    const drawingCanvas = Quagga.canvas.dom.overlay;
+
+                    if (data) {
+                        if (data.boxes) {
+                            drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+                            data.boxes.filter((box) => box !== data.box).forEach((box) => {
+                                Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
+                            });
+                        }
+
+                        if (data.box) {
+                            Quagga.ImageDebug.drawPath(data.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
+                        }
+
+                        if (data.codeResult && data.codeResult.code) {
+                            Quagga.ImageDebug.drawPath(data.codeResult.box, {x: 0, y: 1}, drawingCtx, {color: "red", lineWidth: 3});
                         }
                     }
                 });
@@ -386,9 +452,25 @@
                 document.getElementById('startContinuous').style.display = 'inline-block';
                 document.getElementById('stopScan').style.display = 'none';
                 document.getElementById('modeIndicator').style.display = 'none';
+                
+                // 清理临时检测数据
+                this.tempDetections = {};
+                // 清理扫描时间数据
+                this.lastScanTime = {};
             }
 
             addRecord(code) {
+                const now = Date.now();
+                
+                // 检查是否在冷却时间内（如果设置了扫描间隔）
+                if (this.scanInterval > 0 && this.lastScanTime[code] && (now - this.lastScanTime[code]) < this.scanInterval) {
+                    console.log('条形码 ' + code + ' 在冷却时间内，跳过');
+                    return;
+                }
+                
+                // 更新该条形码的最后扫描时间
+                this.lastScanTime[code] = now;
+                
                 const exists = this.records.some(r => r.code === code);
                 if (!exists) {
                     this.records.unshift({
