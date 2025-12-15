@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>条形码扫描器</title>
-    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <title>二维码扫描器</title>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -245,6 +244,50 @@
             margin-bottom: 10px;
         }
         
+        /* 扫描反馈样式 */
+        .scan-feedback {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .feedback-content {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            max-width: 80%;
+        }
+        
+        .feedback-icon {
+            font-size: 48px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        
+        .feedback-text {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .feedback-code {
+            font-size: 16px;
+            word-break: break-all;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
         @media (max-width: 480px) {
             .controls {
                 flex-direction: column;
@@ -272,20 +315,27 @@
                 margin-left: 0;
                 margin-top: 5px;
             }
+            
+            .feedback-text {
+                font-size: 18px;
+            }
+            
+            .feedback-code {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📱 条形码扫描器</h1>
+        <h1>📱 二维码扫描器</h1>
         
         <div class="mode-indicator" id="modeIndicator" style="display: none;">
             <span id="modeText"></span>
         </div>
         
         <div class="controls">
-            <button id="startScan" class="btn-primary">开始扫描条形码</button>
-            <button id="startQRScan" class="btn-primary">开始扫描二维码</button>
+            <button id="startQRScan" class="btn-primary">开始扫描</button>
             <button id="startContinuous" class="btn-success">连续扫描</button>
             <button id="stopScan" class="btn-danger" style="display: none;">停止扫描</button>
             <button id="exportExcel" class="btn-warning">导出Excel</button>
@@ -296,6 +346,15 @@
             <input type="file" id="imageFile" accept="image/*" style="display: none;">
             <button id="selectImage" class="btn-primary">选择图片</button>
             <button id="scanImage" class="btn-success" disabled>扫描图片</button>
+        </div>
+        
+        <!-- 扫描反馈区域 -->
+        <div id="scanFeedback" class="scan-feedback" style="display: none;">
+            <div class="feedback-content">
+                <div class="feedback-icon">✓</div>
+                <div class="feedback-text">扫描到二维码</div>
+                <div class="feedback-code" id="feedbackCode"></div>
+            </div>
         </div>
         
         <!-- 重复扫描间隔控制已移除 -->
@@ -326,7 +385,7 @@
                 this.records = JSON.parse(localStorage.getItem('barcodeRecords') || '[]');
                 this.isScanning = false;
                 this.isContinuous = false;
-                this.detectionResults = []; // 存储检测结果用于验证
+                this.lastScannedCodes = new Map(); // 用于连续扫描时去重
                 this.init();
             }
 
@@ -337,9 +396,8 @@
             }
 
             bindEvents() {
-                document.getElementById('startScan').addEventListener('click', () => this.startScan(false));
-                document.getElementById('startQRScan').addEventListener('click', () => this.startQRScan());
-                document.getElementById('startContinuous').addEventListener('click', () => this.startScan(true));
+                document.getElementById('startQRScan').addEventListener('click', () => this.startQRScan(false));
+                document.getElementById('startContinuous').addEventListener('click', () => this.startQRScan(true));
                 document.getElementById('stopScan').addEventListener('click', () => this.stopScan());
                 document.getElementById('exportExcel').addEventListener('click', () => this.exportExcel());
                 document.getElementById('clearRecords').addEventListener('click', () => this.clearRecords());
@@ -350,193 +408,15 @@
                 document.getElementById('imageFile').addEventListener('change', (e) => this.handleImageSelect(e));
             }
 
-            selectImage() {
-                document.getElementById('imageFile').click();
-            }
-
-            handleImageSelect(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    document.getElementById('scanImage').disabled = false;
-                    this.selectedImageFile = file;
-                }
-            }
-
-            scanImage() {
-                if (!this.selectedImageFile) {
-                    alert('请先选择一张图片');
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const imageUrl = e.target.result;
-                    
-                    // 创建一个图像对象来加载图片
-                    const image = new Image();
-                    image.onload = () => {
-                        // 创建画布来处理图像
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        canvas.width = image.width;
-                        canvas.height = image.height;
-                        ctx.drawImage(image, 0, 0);
-                        
-                        // 尝试使用 jsQR 解码二维码
-                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
-                        
-                        if (qrCode) {
-                            // 成功识别二维码
-                            console.log('从图片中识别到二维码:', qrCode.data);
-                            this.addRecord(qrCode.data);
-                            alert(`二维码识别成功: ${qrCode.data}`);
-                            return;
-                        }
-                        
-                        // 如果不是二维码，尝试使用 QuaggaJS 识别条形码
-                        Quagga.decodeSingle({
-                            src: imageUrl,
-                            decoder: {
-                                readers: ["code_128_reader"]
-                            }
-                        }, (result) => {
-                            if (result && result.codeResult) {
-                                const code = result.codeResult.code;
-                                console.log('从图片中识别到条形码:', code);
-                                this.addRecord(code);
-                                alert(`条形码识别成功: ${code}`);
-                            } else {
-                                alert('未识别到条形码或二维码，请确保图片清晰且包含有效的码');
-                            }
-                        });
-                    };
-                    image.src = imageUrl;
-                };
-                reader.readAsDataURL(this.selectedImageFile);
-            }
-
-            startScan(continuous = false) {
+            startQRScan(continuous = false) {
                 this.isContinuous = continuous;
                 this.isScanning = true;
                 document.getElementById('scanner-container').style.display = 'block';
-                document.getElementById('startScan').style.display = 'none';
-                document.getElementById('startContinuous').style.display = 'none';
-                document.getElementById('stopScan').style.display = 'inline-block';
-                document.getElementById('modeIndicator').style.display = 'block';
-                document.getElementById('modeText').textContent = continuous ? '连续扫描模式' : '单次扫描模式';
-
-                Quagga.init({
-                    inputStream: {
-                        name: "Live",
-                        type: "LiveStream",
-                        target: document.querySelector('#scanner-container'),
-                        constraints: {
-                            width: 640,
-                            height: 480,
-                            facingMode: "environment"
-                        }
-                    },
-                    decoder: {
-                        readers: ["code_128_reader"]
-                    }
-                }, (err) => {
-                    if (err) {
-                        alert("摄像头初始化失败: " + err);
-                        this.stopScan();
-                        return;
-                    }
-                    Quagga.start();
-                });
-
-                // 同时初始化二维码扫描
-                this.initQRScanner();
-
-                // 清空之前的检测结果
-                this.detectionResults = [];
-                const verificationThreshold = 2; // 需要验证的次数（降低阈值以提高识别率）
-                
-                Quagga.onDetected((data) => {
-                    const code = data.codeResult.code;
-                    const confidence = data.codeResult.confidence;
-                    
-                    if (code && confidence > 0.2) { // 降低置信度阈值以提高识别率
-                        console.log('检测到条形码:', code, '置信度:', confidence);
-                        
-                        // 查找是否已有相同的结果
-                        let existingResult = this.detectionResults.find(r => r.code === code);
-                        if (existingResult) {
-                            existingResult.count++;
-                            existingResult.confidences.push(confidence);
-                        } else {
-                            this.detectionResults.push({
-                                code: code,
-                                count: 1,
-                                confidences: [confidence]
-                            });
-                        }
-                        
-                        // 如果某个结果达到验证阈值，则记录它
-                        if (this.detectionResults.find(r => r.code === code && r.count >= verificationThreshold)) {
-                            this.addRecord(code);
-                            this.detectionResults = []; // 重置结果数组
-                            
-                            if (!this.isContinuous) {
-                                this.stopScan();
-                            }
-                        }
-                    }
-                });
-            }
-
-            initQRScanner() {
-                // 获取视频流
-                const video = document.querySelector('#scanner-container video');
-                if (!video) return;
-
-                // 创建画布用于二维码检测
-                this.qrCanvas = document.createElement('canvas');
-                this.qrCanvas.style.position = 'absolute';
-                this.qrCanvas.style.top = '0';
-                this.qrCanvas.style.left = '0';
-                this.qrCanvas.style.width = '100%';
-                this.qrCanvas.style.height = '100%';
-                document.querySelector('#scanner-container').appendChild(this.qrCanvas);
-
-                this.qrCtx = this.qrCanvas.getContext('2d');
-
-                // 定期检查帧中的二维码
-                this.qrScanInterval = setInterval(() => {
-                    if (this.isScanning) {
-                        this.qrCanvas.width = video.videoWidth || 640;
-                        this.qrCanvas.height = video.videoHeight || 480;
-                        this.qrCtx.drawImage(video, 0, 0, this.qrCanvas.width, this.qrCanvas.height);
-                        
-                        const imageData = this.qrCtx.getImageData(0, 0, this.qrCanvas.width, this.qrCanvas.height);
-                        const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
-                        
-                        if (qrCode) {
-                            console.log('检测到二维码:', qrCode.data);
-                            this.addRecord(qrCode.data);
-                            
-                            if (!this.isContinuous) {
-                                this.stopScan();
-                            }
-                        }
-                    }
-                }, 500); // 每500毫秒检查一次
-            }
-
-            startQRScan() {
-                this.isScanning = true;
-                this.isQRScanning = true;
-                document.getElementById('scanner-container').style.display = 'block';
-                document.getElementById('startScan').style.display = 'none';
                 document.getElementById('startQRScan').style.display = 'none';
                 document.getElementById('startContinuous').style.display = 'none';
                 document.getElementById('stopScan').style.display = 'inline-block';
                 document.getElementById('modeIndicator').style.display = 'block';
-                document.getElementById('modeText').textContent = '二维码扫描模式';
+                document.getElementById('modeText').textContent = continuous ? '连续扫描模式' : '单次扫描模式';
 
                 // 获取媒体流
                 navigator.mediaDevices.getUserMedia({ 
@@ -572,7 +452,7 @@
 
                 // 定期检查帧中的二维码
                 this.qrScanInterval = setInterval(() => {
-                    if (this.isScanning && this.isQRScanning) {
+                    if (this.isScanning) {
                         this.qrCanvas.width = video.videoWidth || 640;
                         this.qrCanvas.height = video.videoHeight || 480;
                         this.qrCtx.drawImage(video, 0, 0, this.qrCanvas.width, this.qrCanvas.height);
@@ -582,19 +462,53 @@
                         
                         if (qrCode) {
                             console.log('检测到二维码:', qrCode.data);
-                            this.addRecord(qrCode.data);
                             
-                            // 单次扫描，识别到就停止
-                            this.stopScan();
+                            // 检查是否是重复扫描（仅在连续扫描模式下）
+                            if (this.isContinuous) {
+                                const now = Date.now();
+                                const lastScanTime = this.lastScannedCodes.get(qrCode.data) || 0;
+                                
+                                // 如果距离上次扫描同一条码超过1秒，或者这是第一次扫描该条码
+                                if (now - lastScanTime > 1000) {
+                                    this.lastScannedCodes.set(qrCode.data, now);
+                                    this.addRecord(qrCode.data);
+                                    
+                                    // 显示扫描反馈
+                                    this.showScanFeedback(qrCode.data);
+                                }
+                            } else {
+                                // 单次扫描模式，直接添加记录
+                                this.addRecord(qrCode.data);
+                                
+                                // 显示扫描反馈
+                                this.showScanFeedback(qrCode.data);
+                                
+                                // 单次扫描，识别到就停止
+                                setTimeout(() => {
+                                    this.stopScan();
+                                }, 2000); // 2秒后自动停止
+                            }
                         }
                     }
-                }, 300); // 每300毫秒检查一次
+                }, 100); // 每100毫秒检查一次，提高识别速度
+            }
+
+            showScanFeedback(code) {
+                const feedbackElement = document.getElementById('scanFeedback');
+                const feedbackCodeElement = document.getElementById('feedbackCode');
+                
+                feedbackCodeElement.textContent = code;
+                feedbackElement.style.display = 'flex';
+                
+                // 2秒后隐藏反馈
+                setTimeout(() => {
+                    feedbackElement.style.display = 'none';
+                }, 2000);
             }
 
             stopScan() {
                 this.isScanning = false;
                 this.isQRScanning = false;
-                Quagga.stop();
                 
                 // 停止二维码扫描
                 if (this.qrScanInterval) {
@@ -619,30 +533,27 @@
                 }
                 
                 document.getElementById('scanner-container').style.display = 'none';
-                document.getElementById('startScan').style.display = 'inline-block';
                 document.getElementById('startQRScan').style.display = 'inline-block';
                 document.getElementById('startContinuous').style.display = 'inline-block';
                 document.getElementById('stopScan').style.display = 'none';
                 document.getElementById('modeIndicator').style.display = 'none';
                 
-                // 清理检测结果数据
-                this.detectionResults = [];
+                // 隐藏扫描反馈
+                document.getElementById('scanFeedback').style.display = 'none';
+                
+                // 清理扫描去重数据
+                this.lastScannedCodes.clear();
             }
 
             addRecord(code) {
-                // 检查是否已存在相同的条形码
-                const exists = this.records.some(r => r.code === code);
-                if (!exists) {
-                    this.records.unshift({
-                        code: code,
-                        time: new Date().toLocaleString('zh-CN')
-                    });
-                    localStorage.setItem('barcodeRecords', JSON.stringify(this.records));
-                    this.renderRecords();
-                    this.updateStats();
-                } else {
-                    console.log('条形码 ' + code + ' 已存在，跳过');
-                }
+                // 直接添加记录，不去重（因为去重逻辑在扫描时已经处理）
+                this.records.unshift({
+                    code: code,
+                    time: new Date().toLocaleString('zh-CN')
+                });
+                localStorage.setItem('barcodeRecords', JSON.stringify(this.records));
+                this.renderRecords();
+                this.updateStats();
             }
 
             renderRecords() {
@@ -674,7 +585,9 @@
 
             updateStats() {
                 document.getElementById('totalCount').textContent = this.records.length;
-                document.getElementById('uniqueCount').textContent = this.records.length;
+                // 计算唯一码数
+                const uniqueCodes = new Set(this.records.map(r => r.code));
+                document.getElementById('uniqueCount').textContent = uniqueCodes.size;
             }
 
             exportExcel() {
@@ -682,13 +595,25 @@
                     alert('没有数据可导出');
                     return;
                 }
-                const ws = XLSX.utils.json_to_sheet(this.records.map(r => ({
-                    '条形码': r.code,
+                
+                // 去重导出数据
+                const uniqueRecords = [];
+                const seenCodes = new Set();
+                
+                for (const record of this.records) {
+                    if (!seenCodes.has(record.code)) {
+                        seenCodes.add(record.code);
+                        uniqueRecords.push(record);
+                    }
+                }
+                
+                const ws = XLSX.utils.json_to_sheet(uniqueRecords.map(r => ({
+                    '二维码': r.code,
                     '扫描时间': r.time
                 })));
                 const wb = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(wb, ws, '扫描记录');
-                XLSX.writeFile(wb, `条形码扫描记录_${new Date().toLocaleDateString('zh-CN')}.xlsx`);
+                XLSX.writeFile(wb, `二维码扫描记录_${new Date().toLocaleDateString('zh-CN')}.xlsx`);
             }
 
             clearRecords() {
@@ -698,6 +623,56 @@
                     this.renderRecords();
                     this.updateStats();
                 }
+            }
+
+            selectImage() {
+                document.getElementById('imageFile').click();
+            }
+
+            handleImageSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    this.selectedImageFile = file;
+                    document.getElementById('scanImage').disabled = false;
+                }
+            }
+
+            scanImage() {
+                if (!this.selectedImageFile) {
+                    alert('请先选择一张图片');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    
+                    // 创建一个图像对象来加载图片
+                    const image = new Image();
+                    image.onload = () => {
+                        // 创建画布来处理图像
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+                        ctx.drawImage(image, 0, 0);
+                        
+                        // 尝试使用 jsQR 解码二维码
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
+                        
+                        if (qrCode) {
+                            // 成功识别二维码
+                            console.log('从图片中识别到二维码:', qrCode.data);
+                            this.addRecord(qrCode.data);
+                            alert(`二维码识别成功: ${qrCode.data}`);
+                        } else {
+                            alert('未识别到二维码，请确保图片清晰且包含有效的二维码');
+                        }
+                    };
+                    image.src = imageUrl;
+                };
+                reader.readAsDataURL(this.selectedImageFile);
             }
         }
 
